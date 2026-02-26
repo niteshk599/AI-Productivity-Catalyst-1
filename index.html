@@ -278,6 +278,38 @@ main{position:relative;z-index:1}
   </div>
 </div>
 
+<!-- ADMIN LOGIN MODAL -->
+<div id="admin-login-modal" class="hidden" style="position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border-radius:20px;padding:40px;max-width:420px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.25);position:relative">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 14px">🔐</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:6px">Admin Access</h2>
+      <p style="color:var(--muted);font-size:13.5px">This area is protected. Enter admin credentials to continue.</p>
+    </div>
+    <div id="admin-login-error" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none"></div>
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Admin Email</label>
+      <input id="admin-email" type="email" placeholder="admin@yourdomain.com" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Password</label>
+      <div style="position:relative">
+        <input id="admin-password" type="password" placeholder="••••••••" style="width:100%;padding:12px 46px 12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')doAdminLogin()">
+        <button onclick="togglePwd('admin-password',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;font-size:16px;color:var(--muted)">👁</button>
+      </div>
+    </div>
+    <button onclick="doAdminLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(91,94,244,.3);transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
+      <span id="admin-login-btn-text">Unlock Admin Panel →</span>
+    </button>
+    <button onclick="closeAdminLogin()" style="display:block;width:100%;margin-top:12px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px">Cancel</button>
+    <div style="margin-top:20px;background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7">
+      <strong style="color:var(--text)">💡 Demo credentials:</strong><br>
+      Email: <code style="background:rgba(91,94,244,.1);color:var(--accent);padding:1px 6px;border-radius:4px">admin@skillaunch.com</code><br>
+      Password: <code style="background:rgba(91,94,244,.1);color:var(--accent);padding:1px 6px;border-radius:4px">admin123</code>
+    </div>
+  </div>
+</div>
+
 <!-- EDIT MODAL -->
 <div id="edit-modal" class="hidden" style="position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--surface);border-radius:20px;padding:36px;max-width:500px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.2);position:relative">
@@ -313,7 +345,7 @@ main{position:relative;z-index:1}
     <button class="tab-btn" onclick="showPage('courses',this)">Courses</button>
     <button class="tab-btn" onclick="showPage('jobs',this)">Jobs</button>
     <button class="tab-btn" onclick="showPage('dashboard',this)">Dashboard</button>
-    <button class="tab-btn" onclick="showPage('admin',this)">⚙️ Admin</button>
+    <button class="tab-btn" id="admin-tab-btn" onclick="handleAdminClick(this)" style="display:none">⚙️ Admin</button>
   </div>
   <div class="nav-right" id="nav-auth">
     <button class="btn-ghost" onclick="openAuth('login')">Sign In</button>
@@ -448,10 +480,13 @@ main{position:relative;z-index:1}
 <!-- ADMIN -->
 <div class="page fade-in" id="page-admin">
   <div style="max-width:1100px;margin:0 auto;padding:36px 40px 80px">
-    <div style="margin-bottom:28px">
-      <div class="badge">⚙️ Admin Panel</div>
-      <h1 style="font-family:'Playfair Display',serif;font-size:36px;font-weight:800;margin:10px 0 8px">Manage Content</h1>
-      <p style="color:var(--muted);font-size:15px">Edit course names, titles, prices and job listings directly here.</p>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
+      <div>
+        <div class="badge">⚙️ Admin Panel</div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:36px;font-weight:800;margin:10px 0 8px">Manage Content</h1>
+        <p style="color:var(--muted);font-size:15px">Edit course names, titles, prices and job listings directly here.</p>
+      </div>
+      <button onclick="logoutAdmin()" style="margin-top:14px;padding:9px 18px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:9px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">🔒 Exit Admin</button>
     </div>
 
     <!-- TABS -->
@@ -544,7 +579,16 @@ async function sbAuth(action, email, password, name='') {
 function showSetup() { document.getElementById('setup-modal').classList.remove('hidden'); }
 function closeSetup() {
   document.getElementById('setup-modal').classList.add('hidden');
-  loadAllData().then(() => renderAdminTable());
+  loadAllData().then(() => {
+    renderAdminTable();
+    // Restore admin session if still active
+    if (sessionStorage.getItem('admin_session')) {
+      isAdminLoggedIn = true;
+      const adminBtn = document.getElementById('admin-tab-btn');
+      adminBtn.style.display = 'block';
+      adminBtn.textContent = '⚙️ Admin ●';
+    }
+  });
 }
 function saveConfig() {
   const url = document.getElementById('sb-url').value.trim();
@@ -910,6 +954,109 @@ function showSQL(sql) {
   document.getElementById('sql-content').innerHTML = `<code>${sql}</code>`;
   document.getElementById('sql-panel').classList.add('show');
   setTimeout(()=>document.getElementById('sql-panel').classList.remove('show'),5000);
+}
+
+// ═══════════════════════════════════════════════
+//  ADMIN AUTH
+// ═══════════════════════════════════════════════
+// ⚠️ Change these to your real admin credentials
+const ADMIN_EMAIL    = 'admin@skillaunch.com';
+const ADMIN_PASSWORD = 'admin123';
+
+let isAdminLoggedIn = false;
+
+function handleAdminClick(btn) {
+  if (isAdminLoggedIn) {
+    showPage('admin', btn);
+    renderAdminTable();
+  } else {
+    openAdminLogin();
+  }
+}
+
+function openAdminLogin() {
+  document.getElementById('admin-login-modal').classList.remove('hidden');
+  document.getElementById('admin-login-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('admin-email').focus(), 100);
+}
+
+function closeAdminLogin() {
+  document.getElementById('admin-login-modal').classList.add('hidden');
+  document.getElementById('admin-login-modal').style.display = 'none';
+  document.getElementById('admin-email').value = '';
+  document.getElementById('admin-password').value = '';
+  document.getElementById('admin-login-error').style.display = 'none';
+}
+
+async function doAdminLogin() {
+  const email = document.getElementById('admin-email').value.trim();
+  const pass  = document.getElementById('admin-password').value;
+  const errEl = document.getElementById('admin-login-error');
+  const btn   = document.getElementById('admin-login-btn-text');
+  errEl.style.display = 'none';
+
+  if (!email || !pass) {
+    errEl.textContent = 'Please enter email and password.';
+    errEl.style.display = 'block'; return;
+  }
+
+  btn.innerHTML = '<span class="spinner"></span> Verifying...';
+
+  await new Promise(r => setTimeout(r, 600)); // small UX delay
+
+  // If Supabase is connected — use Supabase Auth + admin role check
+  if (SB_URL) {
+    try {
+      const data = await sbAuth('login', email, pass);
+      // Check if user has admin role in your DB (optional: add is_admin column to profiles)
+      const profile = await sbFetch(`profiles?user_id=eq.${data.user.id}&select=is_admin`).catch(()=>null);
+      const isAdmin = profile?.[0]?.is_admin === true || email === ADMIN_EMAIL;
+      if (!isAdmin) throw new Error('You do not have admin access.');
+      localStorage.setItem('admin_token', data.access_token);
+      grantAdminAccess(email);
+    } catch(e) {
+      errEl.textContent = e.message || 'Invalid credentials.';
+      errEl.style.display = 'block';
+    }
+  } else {
+    // Demo mode — hardcoded credentials
+    if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
+      grantAdminAccess(email);
+    } else {
+      errEl.textContent = '❌ Wrong email or password. Try demo credentials below.';
+      errEl.style.display = 'block';
+    }
+  }
+  btn.textContent = 'Unlock Admin Panel →';
+}
+
+function grantAdminAccess(email) {
+  isAdminLoggedIn = true;
+  sessionStorage.setItem('admin_session', '1');
+  closeAdminLogin();
+  // Show admin tab + navigate
+  const adminBtn = document.getElementById('admin-tab-btn');
+  adminBtn.style.display = 'block';
+  showPage('admin', adminBtn);
+  renderAdminTable();
+  toast('🔐 Admin access granted!', 'success');
+  // Show logout option in admin tab
+  adminBtn.textContent = '⚙️ Admin ●';
+}
+
+function logoutAdmin() {
+  isAdminLoggedIn = false;
+  sessionStorage.removeItem('admin_session');
+  localStorage.removeItem('admin_token');
+  document.getElementById('admin-tab-btn').style.display = 'none';
+  showPage('home', document.querySelectorAll('.tab-btn')[0]);
+  toast('Admin session ended', '');
+}
+
+function togglePwd(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
 }
 
 // ═══════════════════════════════════════════════
