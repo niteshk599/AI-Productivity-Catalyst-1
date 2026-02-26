@@ -3,49 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SkillLaunch — AI Courses & Dream Jobs</title>
+<title>SkillLaunch — AI Courses & Jobs</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#F6F8FF; --surface:#fff; --surface2:#F0F3FF;
-  --accent:#5B5EF4; --accent2:#9333EA; --accent3:#06B6D4;
-  --green:#059669; --orange:#F59E0B;
-  --text:#0F172A; --muted:#64748B; --border:rgba(91,94,244,0.13);
+:root{
+  --bg:#F6F8FF;--surface:#fff;--surface2:#F0F3FF;
+  --accent:#5B5EF4;--accent2:#9333EA;--accent3:#06B6D4;
+  --green:#059669;--orange:#F59E0B;--red:#EF4444;
+  --text:#0F172A;--muted:#64748B;--border:rgba(91,94,244,.13);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-
-/* BG */
 .bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(91,94,244,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(91,94,244,.05) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
 .blob{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0}
 .blob1{width:500px;height:500px;background:rgba(91,94,244,.09);top:-150px;right:-100px}
 .blob2{width:400px;height:400px;background:rgba(147,51,234,.07);bottom:0;left:-100px}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(246,248,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+/* ── CONFIG BANNER ── */
+#config-banner{position:fixed;top:0;left:0;right:0;z-index:999;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;text-align:center;padding:10px 20px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:12px}
+#config-banner.hidden{display:none}
+.config-link{color:#fff;text-decoration:underline;cursor:pointer;font-weight:700}
+
+/* ── SETUP MODAL ── */
+#setup-modal{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}
+#setup-modal.hidden{display:none}
+.modal-box{background:var(--surface);border-radius:20px;padding:40px;max-width:520px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.2)}
+.modal-box h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;margin-bottom:8px}
+.modal-box p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:24px}
+.input-group{margin-bottom:16px}
+.input-group label{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px}
+.input-group input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s}
+.input-group input:focus{border-color:var(--accent);background:#fff}
+.modal-steps{background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:24px;font-size:13px;line-height:1.8;color:var(--muted)}
+.modal-steps strong{color:var(--text)}
+.modal-steps code{background:rgba(91,94,244,.1);color:var(--accent);padding:1px 6px;border-radius:4px;font-size:12px}
+.btn-save{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-save:hover{opacity:.9;transform:translateY(-1px)}
+.skip-link{display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(246,248,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:top .3s}
+nav.with-banner{top:42px}
 .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;letter-spacing:-.5px;text-decoration:none;color:var(--text)}
 .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
 .logo span{color:var(--accent)}
 .nav-tabs{display:flex;gap:4px}
 .tab-btn{padding:7px 16px;border-radius:8px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);transition:all .2s}
 .tab-btn.active,.tab-btn:hover{background:rgba(91,94,244,.1);color:var(--accent)}
-.nav-right{display:flex;gap:10px}
+.nav-right{display:flex;gap:10px;align-items:center}
+.user-pill{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:5px 14px 5px 6px;font-size:13px;font-weight:600;cursor:pointer}
+.user-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800}
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;transition:all .2s}
 .btn-ghost:hover{border-color:var(--accent);color:var(--text)}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;padding:9px 20px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;box-shadow:0 0 20px rgba(91,94,244,.3);transition:all .2s}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(91,94,244,.5)}
 
-main{position:relative;z-index:1}
+/* ── AUTH MODAL ── */
+#auth-modal{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px}
+#auth-modal.hidden{display:none}
+.auth-box{background:var(--surface);border-radius:20px;padding:40px;max-width:420px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.2)}
+.auth-box h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:6px;text-align:center}
+.auth-box p{color:var(--muted);font-size:13.5px;text-align:center;margin-bottom:28px}
+.auth-tabs{display:flex;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:24px}
+.auth-tab{flex:1;padding:8px;text-align:center;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;font-family:inherit;color:var(--muted);transition:all .2s}
+.auth-tab.active{background:#fff;color:var(--accent);box-shadow:0 1px 6px rgba(0,0,0,.08)}
+.auth-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
+.auth-success{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);color:var(--green);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
+.auth-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:none;background:var(--surface2);border-radius:8px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.relative{position:relative}
 
-/* PAGES */
+/* ── TOAST ── */
+#toast{position:fixed;bottom:30px;right:30px;z-index:999;background:var(--text);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.2);transform:translateY(100px);opacity:0;transition:all .3s;max-width:320px}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.success{background:var(--green)}
+#toast.error{background:var(--red)}
+
+/* ── LOADING ── */
+.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,#e8ecff 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+main{position:relative;z-index:1}
 .page{display:none;padding-top:64px}
 .page.active{display:block}
+.page.with-banner{padding-top:106px}
 
-/* ===== HOME PAGE ===== */
-.hero{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px 60px}
+/* ── HERO ── */
+.hero{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px 60px}
 .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(91,94,244,.1);border:1px solid rgba(91,94,244,.25);padding:6px 16px;border-radius:100px;font-size:12px;font-weight:700;color:var(--accent);margin-bottom:28px;letter-spacing:.3px}
-.hero h1{font-family:'Playfair Display',serif;font-size:clamp(38px,6vw,70px);font-weight:800;line-height:1.1;letter-spacing:-1px;margin-bottom:20px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(38px,6vw,68px);font-weight:800;line-height:1.1;letter-spacing:-1px;margin-bottom:20px}
 .grad{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero p{font-size:17px;color:var(--muted);max-width:540px;margin:0 auto 36px;line-height:1.75}
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
@@ -55,61 +104,58 @@ main{position:relative;z-index:1}
 .stats{display:flex;gap:52px;margin-top:64px;flex-wrap:wrap;justify-content:center}
 .stat-num{font-size:28px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .stat-label{font-size:12px;color:var(--muted);font-weight:500;margin-top:4px}
-
-/* Home 2-col */
-.home-grid{max-width:1200px;margin:0 auto;padding:80px 40px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.home-grid{max-width:1200px;margin:0 auto;padding:60px 40px 80px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .home-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;cursor:pointer;transition:all .3s;box-shadow:0 2px 16px rgba(91,94,244,.07);position:relative;overflow:hidden}
 .home-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(91,94,244,.04),transparent);opacity:0;transition:opacity .3s}
 .home-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(91,94,244,.14);border-color:rgba(91,94,244,.3)}
 .home-card:hover::before{opacity:1}
 .card-icon{font-size:40px;margin-bottom:20px}
-.home-card h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;margin-bottom:12px;letter-spacing:-.3px}
+.home-card h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;margin-bottom:12px}
 .home-card p{color:var(--muted);font-size:14.5px;line-height:1.75;margin-bottom:24px}
 .card-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(91,94,244,.1);color:var(--accent);font-size:12px;font-weight:700;padding:4px 12px;border-radius:100px}
 
-/* ===== COURSES PAGE ===== */
-.page-hero{padding:80px 40px 40px;max-width:1200px;margin:0 auto}
-.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,46px);font-weight:800;letter-spacing:-.5px;margin-bottom:12px}
-.page-hero p{color:var(--muted);font-size:16px;max-width:520px;line-height:1.7}
-.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+/* ── COURSES ── */
+.page-hero{padding:80px 40px 32px;max-width:1200px;margin:0 auto}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.page-hero p{color:var(--muted);font-size:15.5px;max-width:520px;line-height:1.7}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
 .filter-btn{padding:7px 18px;border-radius:100px;border:1px solid var(--border);background:var(--surface);font-family:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s}
 .filter-btn.active,.filter-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-.courses-grid{max-width:1200px;margin:0 auto;padding:0 40px 80px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.courses-grid{max-width:1200px;margin:0 auto;padding:24px 40px 80px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .course-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .3s;box-shadow:0 2px 12px rgba(91,94,244,.06);cursor:pointer}
 .course-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(91,94,244,.14);border-color:rgba(91,94,244,.3)}
-.course-thumb{height:160px;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative}
-.course-body{padding:20px}
-.course-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px}
+.course-thumb{height:150px;display:flex;align-items:center;justify-content:center;font-size:48px}
+.course-body{padding:18px}
+.course-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:6px}
 .course-card h3{font-size:15px;font-weight:700;letter-spacing:-.2px;margin-bottom:8px;line-height:1.4}
-.course-card p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px}
+.course-card p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:14px}
 .course-meta{display:flex;align-items:center;justify-content:space-between}
 .course-info{display:flex;gap:10px;font-size:12px;color:var(--muted)}
 .course-price{font-size:16px;font-weight:800;letter-spacing:-.5px}
 .course-price .old{font-size:12px;font-weight:400;color:var(--muted);text-decoration:line-through;margin-left:4px}
-.stars-sm{color:#F59E0B;font-size:11px}
+.stars-sm{color:#F59E0B;font-size:11px;margin-bottom:4px}
 .enroll-btn{width:100%;margin-top:14px;padding:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
-.enroll-btn:hover{opacity:.9;transform:translateY(-1px)}
+.enroll-btn:hover{opacity:.9}
+.enrolled-tag{width:100%;margin-top:14px;padding:10px;background:rgba(5,150,105,.1);color:var(--green);border:1px solid rgba(5,150,105,.2);border-radius:8px;font-size:13px;font-weight:700;text-align:center}
 
-/* ===== JOBS PAGE ===== */
-.jobs-layout{max-width:1200px;margin:0 auto;padding:20px 40px 80px;display:grid;grid-template-columns:280px 1fr;gap:20px}
-.jobs-sidebar{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;height:fit-content;position:sticky;top:84px}
-.jobs-sidebar h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px;margin-top:20px}
+/* ── JOBS ── */
+.jobs-layout{max-width:1200px;margin:0 auto;padding:20px 40px 80px;display:grid;grid-template-columns:260px 1fr;gap:20px}
+.jobs-sidebar{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;height:fit-content;position:sticky;top:84px}
+.jobs-sidebar h3{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:12px;margin-top:20px}
 .jobs-sidebar h3:first-child{margin-top:0}
-.filter-group{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
 .checkbox-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;padding:4px 0}
-.checkbox-item input{accent-color:var(--accent);width:14px;height:14px}
+.checkbox-item input{accent-color:var(--accent)}
 .salary-range{width:100%;accent-color:var(--accent);margin:8px 0}
-.jobs-main{}
-.jobs-search{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;gap:12px;align-items:center;margin-bottom:16px;box-shadow:0 2px 12px rgba(91,94,244,.07)}
+.jobs-search{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;gap:12px;align-items:center;margin-bottom:14px;box-shadow:0 2px 12px rgba(91,94,244,.06)}
 .jobs-search input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;color:var(--text);background:transparent}
 .jobs-search input::placeholder{color:var(--muted)}
 .jobs-count{font-size:13px;color:var(--muted);margin-bottom:12px;font-weight:500}
-.job-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px;cursor:pointer;transition:all .2s;box-shadow:0 1px 8px rgba(91,94,244,.05)}
+.job-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:10px;cursor:pointer;transition:all .2s;box-shadow:0 1px 8px rgba(91,94,244,.05)}
 .job-card:hover{border-color:rgba(91,94,244,.35);box-shadow:0 6px 24px rgba(91,94,244,.12);transform:translateX(3px)}
-.job-card.featured{border-color:rgba(91,94,244,.3);background:rgba(91,94,244,.02)}
+.job-card.featured{border-color:rgba(91,94,244,.25);background:rgba(91,94,244,.02)}
 .jc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
 .jc-left{display:flex;align-items:center;gap:12px}
-.co-logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;font-family:'Inter',sans-serif}
+.co-logo{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;font-family:'Inter',sans-serif}
 .jc-info h3{font-size:14.5px;font-weight:700;letter-spacing:-.2px;margin-bottom:3px}
 .jc-info p{font-size:12.5px;color:var(--muted)}
 .jc-badges{display:flex;gap:6px;flex-wrap:wrap}
@@ -117,30 +163,30 @@ main{position:relative;z-index:1}
 .jb-green{background:rgba(5,150,105,.1);color:var(--green);border:1px solid rgba(5,150,105,.2)}
 .jb-blue{background:rgba(91,94,244,.1);color:var(--accent);border:1px solid rgba(91,94,244,.2)}
 .jb-orange{background:rgba(245,158,11,.1);color:var(--orange);border:1px solid rgba(245,158,11,.2)}
-.jc-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.jc-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
 .jc-tags{display:flex;gap:6px;flex-wrap:wrap}
 .skill-tag{background:var(--surface2);font-size:11.5px;font-weight:500;padding:3px 10px;border-radius:6px;color:var(--muted)}
-.apply-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:8px 20px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
-.apply-btn:hover{opacity:.9;transform:translateY(-1px)}
+.apply-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:8px 18px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.apply-btn:hover{opacity:.9}
+.applied-tag{background:rgba(5,150,105,.1);color:var(--green);border:1px solid rgba(5,150,105,.2);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700}
 
-/* ===== DASHBOARD ===== */
+/* ── DASHBOARD ── */
 .dash-page{max-width:1200px;margin:0 auto;padding:30px 40px 80px}
-.dash-welcome{margin-bottom:32px}
+.dash-welcome{margin-bottom:28px}
 .dash-welcome h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;margin-bottom:6px}
 .dash-welcome p{color:var(--muted);font-size:15px}
-.dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(91,94,244,.06)}
-.kpi-icon{font-size:22px;margin-bottom:12px}
+.kpi-icon{font-size:22px;margin-bottom:10px}
 .kpi-val{font-size:26px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .kpi-label{font-size:12px;color:var(--muted);font-weight:500;margin-top:4px}
 .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .dash-widget{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 2px 10px rgba(91,94,244,.06)}
 .dash-widget h3{font-size:14px;font-weight:700;margin-bottom:16px;letter-spacing:-.2px}
-.progress-item{margin-bottom:14px}
+.progress-item{margin-bottom:12px}
 .progress-label{display:flex;justify-content:space-between;font-size:13px;font-weight:500;margin-bottom:6px}
 .progress-bar{height:6px;background:var(--surface2);border-radius:100px;overflow:hidden}
 .progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-.recent-list{}
 .recent-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
 .recent-item:last-child{border-bottom:none}
 .ri-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
@@ -148,16 +194,26 @@ main{position:relative;z-index:1}
 .ri-info h4{font-size:13px;font-weight:600;margin-bottom:2px}
 .ri-info p{font-size:12px;color:var(--muted)}
 .ri-status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state .ei{font-size:40px;margin-bottom:12px}
+.empty-state p{font-size:14px;line-height:1.7}
+
+/* ── SQL PANEL ── */
+#sql-panel{position:fixed;bottom:20px;left:20px;z-index:300;background:var(--text);color:#E2E8F0;border-radius:14px;padding:16px 20px;max-width:340px;font-size:12px;line-height:1.7;box-shadow:0 8px 32px rgba(0,0,0,.3);display:none}
+#sql-panel.show{display:block}
+#sql-panel h4{color:#818CF8;font-weight:700;margin-bottom:8px;font-size:11px;text-transform:uppercase;letter-spacing:1px}
+#sql-panel code{color:#7DD3FC;font-family:monospace}
+#sql-panel .close-sql{float:right;cursor:pointer;color:var(--muted);margin-top:-2px}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:fadeUp .5s ease both}
+.fade-in{animation:fadeUp .4s ease both}
 
 @media(max-width:900px){
   .home-grid,.courses-grid,.dash-grid,.dash-kpi{grid-template-columns:1fr}
   .jobs-layout{grid-template-columns:1fr}
   .jobs-sidebar{display:none}
-  nav{padding:0 16px}
-  .hero,.page-hero{padding-left:20px;padding-right:20px}
+  nav,.hero,.page-hero{padding-left:20px;padding-right:20px}
+  nav{padding-left:16px;padding-right:16px}
 }
 </style>
 </head>
@@ -166,10 +222,76 @@ main{position:relative;z-index:1}
 <div class="blob blob1"></div>
 <div class="blob blob2"></div>
 
-<nav>
+<!-- CONFIG BANNER -->
+<div id="config-banner">
+  ⚡ Demo mode — <span class="config-link" onclick="showSetup()">Add your Supabase keys</span> to connect real backend data
+</div>
+
+<!-- SETUP MODAL -->
+<div id="setup-modal">
+  <div class="modal-box">
+    <h2>🔌 Connect Supabase</h2>
+    <p>Enter your Supabase credentials to connect the live backend. Your data stays in your own Supabase project.</p>
+    <div class="modal-steps">
+      <strong>How to get your keys:</strong><br>
+      1. Go to <code>supabase.com</code> → Your Project<br>
+      2. Settings → API → copy <code>Project URL</code><br>
+      3. Copy <code>anon / public</code> key<br>
+      4. Run the SQL schema below in SQL Editor
+    </div>
+    <div class="input-group">
+      <label>Supabase Project URL</label>
+      <input id="sb-url" type="text" placeholder="https://xxxxxxxxxxxx.supabase.co">
+    </div>
+    <div class="input-group">
+      <label>Supabase Anon Key</label>
+      <input id="sb-key" type="text" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+    </div>
+    <button class="btn-save" onclick="saveConfig()">Save & Connect →</button>
+    <span class="skip-link" onclick="closeSetup()">Skip for now (use demo data)</span>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div id="auth-modal" class="hidden">
+  <div class="auth-box relative">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <h2>Welcome to SkillLaunch 🚀</h2>
+    <p>Sign in or create your account to get started</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuth('login',this)">Sign In</button>
+      <button class="auth-tab" onclick="switchAuth('register',this)">Register</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <div id="auth-success" class="auth-success"></div>
+    <div id="login-form">
+      <div class="input-group"><label>Email</label><input id="login-email" type="email" placeholder="you@example.com"></div>
+      <div class="input-group"><label>Password</label><input id="login-password" type="password" placeholder="••••••••"></div>
+      <button class="btn-save" onclick="doLogin()"><span id="login-btn-text">Sign In →</span></button>
+    </div>
+    <div id="register-form" style="display:none">
+      <div class="input-group"><label>Full Name</label><input id="reg-name" type="text" placeholder="Your Name"></div>
+      <div class="input-group"><label>Email</label><input id="reg-email" type="email" placeholder="you@example.com"></div>
+      <div class="input-group"><label>Password</label><input id="reg-password" type="password" placeholder="Min 6 characters"></div>
+      <button class="btn-save" onclick="doRegister()"><span id="reg-btn-text">Create Account →</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- SQL HINT PANEL -->
+<div id="sql-panel">
+  <span class="close-sql" onclick="document.getElementById('sql-panel').classList.remove('show')">✕</span>
+  <h4>📋 SQL Executed</h4>
+  <div id="sql-content"></div>
+</div>
+
+<!-- NAV -->
+<nav id="main-nav" class="with-banner">
   <a href="#" class="logo" onclick="showPage('home')">
-    <div class="logo-icon">🚀</div>
-    Skill<span>Launch</span>
+    <div class="logo-icon">🚀</div>Skill<span>Launch</span>
   </a>
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="showPage('home',this)">Home</button>
@@ -177,42 +299,41 @@ main{position:relative;z-index:1}
     <button class="tab-btn" onclick="showPage('jobs',this)">Jobs</button>
     <button class="tab-btn" onclick="showPage('dashboard',this)">Dashboard</button>
   </div>
-  <div class="nav-right">
-    <button class="btn-ghost">Sign In</button>
-    <button class="btn-primary">Get Started Free</button>
+  <div class="nav-right" id="nav-auth">
+    <button class="btn-ghost" onclick="openAuth('login')">Sign In</button>
+    <button class="btn-primary" onclick="openAuth('register')">Get Started Free</button>
   </div>
 </nav>
 
 <main>
-
 <!-- HOME -->
 <div class="page active fade-in" id="page-home">
   <section class="hero">
     <div class="badge">✦ AI-Powered Learning + Career Platform</div>
     <h1>Learn. Grow.<br><span class="grad">Get Hired.</span></h1>
-    <p>Master AI productivity skills with top courses, then land your dream job — all in one platform built for India's next-gen workforce.</p>
+    <p>Master AI productivity with expert courses, then land your dream job — backed by real-time Supabase data.</p>
     <div class="hero-btns">
-      <button class="btn-primary btn-lg" onclick="showPage('courses', document.querySelectorAll('.tab-btn')[1])">Explore Courses →</button>
-      <button class="btn-outline" onclick="showPage('jobs', document.querySelectorAll('.tab-btn')[2])">Browse Jobs</button>
+      <button class="btn-primary btn-lg" onclick="showPage('courses',document.querySelectorAll('.tab-btn')[1])">Explore Courses →</button>
+      <button class="btn-outline" onclick="showPage('jobs',document.querySelectorAll('.tab-btn')[2])">Browse Jobs</button>
     </div>
     <div class="stats">
-      <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Students Enrolled</div></div>
-      <div class="stat"><div class="stat-num">200+</div><div class="stat-label">AI Courses</div></div>
-      <div class="stat"><div class="stat-num">5L+</div><div class="stat-label">Jobs Listed</div></div>
+      <div class="stat"><div class="stat-num" id="stat-students">50K+</div><div class="stat-label">Students Enrolled</div></div>
+      <div class="stat"><div class="stat-num" id="stat-courses">200+</div><div class="stat-label">AI Courses</div></div>
+      <div class="stat"><div class="stat-num" id="stat-jobs">5L+</div><div class="stat-label">Jobs Listed</div></div>
       <div class="stat"><div class="stat-num">92%</div><div class="stat-label">Placement Rate</div></div>
     </div>
   </section>
   <div class="home-grid">
-    <div class="home-card" onclick="showPage('courses', document.querySelectorAll('.tab-btn')[1])">
+    <div class="home-card" onclick="showPage('courses',document.querySelectorAll('.tab-btn')[1])">
       <div class="card-icon">🎓</div>
       <h2>AI Productivity Courses</h2>
-      <p>Learn ChatGPT, Prompt Engineering, AI Tools for Business, No-Code Automation, and more — curated for working professionals and students.</p>
+      <p>Learn ChatGPT, Prompt Engineering, AI Tools for Business, No-Code Automation & more. Curated for working professionals.</p>
       <div class="card-tag">200+ Courses · Start Free ✦</div>
     </div>
-    <div class="home-card" onclick="showPage('jobs', document.querySelectorAll('.tab-btn')[2])">
+    <div class="home-card" onclick="showPage('jobs',document.querySelectorAll('.tab-btn')[2])">
       <div class="card-icon">💼</div>
       <h2>AI-Matched Job Portal</h2>
-      <p>Get matched to top roles at Google, Infosys, Razorpay & 500+ companies. Our AI scores your profile against every job listing in real time.</p>
+      <p>Get matched to top roles at Google, Infosys, Razorpay & 500+ companies. AI scores your profile against every job listing.</p>
       <div class="card-tag">5L+ Jobs · AI Matching ✦</div>
     </div>
   </div>
@@ -221,130 +342,63 @@ main{position:relative;z-index:1}
 <!-- COURSES -->
 <div class="page fade-in" id="page-courses">
   <div class="page-hero">
-    <div class="badge">🎓 200+ Expert-Led Courses</div>
+    <div class="badge">🎓 Live from Supabase DB</div>
     <h1>Master AI Skills That<br><span class="grad">Get You Hired</span></h1>
-    <p>From beginner to advanced — learn ChatGPT, automation, data analysis and more with hands-on projects.</p>
-    <div class="filter-bar">
-      <button class="filter-btn active">All</button>
-      <button class="filter-btn">AI & ChatGPT</button>
-      <button class="filter-btn">Automation</button>
-      <button class="filter-btn">Data Science</button>
-      <button class="filter-btn">No-Code</button>
-      <button class="filter-btn">Marketing</button>
-      <button class="filter-btn">Free</button>
+    <p>Real courses fetched from your Supabase database in real time.</p>
+    <div class="filter-bar" id="cat-filters">
+      <button class="filter-btn active" onclick="filterCourses('all',this)">All</button>
+      <button class="filter-btn" onclick="filterCourses('AI & ChatGPT',this)">AI & ChatGPT</button>
+      <button class="filter-btn" onclick="filterCourses('Automation',this)">Automation</button>
+      <button class="filter-btn" onclick="filterCourses('Data Science',this)">Data Science</button>
+      <button class="filter-btn" onclick="filterCourses('No-Code',this)">No-Code</button>
+      <button class="filter-btn" onclick="filterCourses('Marketing',this)">Marketing</button>
     </div>
   </div>
-<div class="courses-grid" id="coursesContainer"></div>
+  <div class="courses-grid" id="courses-grid">
+    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">
+      <div class="spinner" style="border-color:rgba(91,94,244,.3);border-top-color:var(--accent);width:32px;height:32px;margin:0 auto 12px"></div>
+      Loading courses...
+    </div>
+  </div>
+</div>
 
 <!-- JOBS -->
 <div class="page fade-in" id="page-jobs">
   <div class="page-hero">
-    <div class="badge">💼 5,00,000+ Live Jobs</div>
-    <h1>Find Jobs That Match<br><span class="grad">Your AI Skills</span></h1>
-    <p>Our AI matches you to roles where your new skills are most valued — updated daily from top companies.</p>
+    <div class="badge">💼 Live Jobs from Supabase</div>
+    <h1>Find Jobs That Match<br><span class="grad">Your Skills</span></h1>
+    <p>Job listings fetched live from your Supabase database — apply with one click.</p>
   </div>
   <div class="jobs-layout">
     <aside class="jobs-sidebar">
       <h3>Experience</h3>
-      <div class="filter-group">
-        <label class="checkbox-item"><input type="checkbox" checked> Fresher (0–1 yr)</label>
-        <label class="checkbox-item"><input type="checkbox" checked> Mid (2–5 yrs)</label>
-        <label class="checkbox-item"><input type="checkbox"> Senior (5+ yrs)</label>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label class="checkbox-item"><input type="checkbox" checked onchange="applyJobFilters()"> Fresher</label>
+        <label class="checkbox-item"><input type="checkbox" checked onchange="applyJobFilters()"> Mid Level</label>
+        <label class="checkbox-item"><input type="checkbox" onchange="applyJobFilters()"> Senior</label>
       </div>
       <h3>Job Type</h3>
-      <div class="filter-group">
-        <label class="checkbox-item"><input type="checkbox" checked> Full Time</label>
-        <label class="checkbox-item"><input type="checkbox" checked> Remote</label>
-        <label class="checkbox-item"><input type="checkbox"> Internship</label>
-        <label class="checkbox-item"><input type="checkbox"> Freelance</label>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label class="checkbox-item"><input type="checkbox" checked onchange="applyJobFilters()"> Full Time</label>
+        <label class="checkbox-item"><input type="checkbox" checked onchange="applyJobFilters()"> Remote</label>
+        <label class="checkbox-item"><input type="checkbox" onchange="applyJobFilters()"> Internship</label>
       </div>
       <h3>Salary (LPA)</h3>
-      <input type="range" class="salary-range" min="3" max="50" value="20">
-      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>₹3L</span><span>₹20L+</span></div>
-      <h3>Location</h3>
-      <div class="filter-group">
-        <label class="checkbox-item"><input type="checkbox" checked> Bengaluru</label>
-        <label class="checkbox-item"><input type="checkbox"> Mumbai</label>
-        <label class="checkbox-item"><input type="checkbox"> Delhi NCR</label>
-        <label class="checkbox-item"><input type="checkbox" checked> Remote</label>
-      </div>
+      <input type="range" class="salary-range" min="3" max="50" value="50" oninput="document.getElementById('sal-val').textContent='₹'+this.value+'L';applyJobFilters()">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>₹3L</span><span id="sal-val">₹50L</span></div>
     </aside>
-    <div class="jobs-main">
+    <div>
       <div class="jobs-search">
         <span>🔍</span>
-        <input type="text" placeholder="Search by title, skill, company...">
-        <button class="btn-primary" style="padding:8px 20px;font-size:13px">Search</button>
+        <input type="text" id="job-search-input" placeholder="Search by title, skill, company..." oninput="applyJobFilters()">
+        <button class="btn-primary" style="padding:8px 18px;font-size:13px">Search</button>
       </div>
-      <div class="jobs-count">Showing <strong>2,847</strong> jobs matched to your profile</div>
-      <div class="job-card featured">
-        <div class="jc-top">
-          <div class="jc-left">
-            <div class="co-logo" style="background:rgba(91,94,244,.15);color:#818CF8">G</div>
-            <div class="jc-info"><h3>AI Product Manager</h3><p>Google · Bengaluru · Hybrid</p></div>
-          </div>
-          <div class="jc-badges">
-            <span class="jbadge jb-green">98% Match</span>
-            <span class="jbadge jb-blue">Featured</span>
-          </div>
+      <div class="jobs-count" id="jobs-count">Loading jobs...</div>
+      <div id="jobs-list">
+        <div style="text-align:center;padding:40px;color:var(--muted)">
+          <div class="spinner" style="border-color:rgba(91,94,244,.3);border-top-color:var(--accent);width:32px;height:32px;margin:0 auto 12px"></div>
+          Fetching jobs from Supabase...
         </div>
-        <div class="jc-bottom">
-          <div class="jc-tags">
-            <span class="skill-tag">ChatGPT</span><span class="skill-tag">Product Strategy</span><span class="skill-tag">SQL</span>
-          </div>
-          <button class="apply-btn">Quick Apply</button>
-        </div>
-        <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">₹35L–₹55L · Posted 2 hours ago</div>
-      </div>
-      <div class="job-card featured">
-        <div class="jc-top">
-          <div class="jc-left">
-            <div class="co-logo" style="background:rgba(6,182,212,.15);color:#22D3EE">R</div>
-            <div class="jc-info"><h3>AI Automation Engineer</h3><p>Razorpay · Remote, India</p></div>
-          </div>
-          <div class="jc-badges">
-            <span class="jbadge jb-green">95% Match</span>
-            <span class="jbadge jb-orange">Hot 🔥</span>
-          </div>
-        </div>
-        <div class="jc-bottom">
-          <div class="jc-tags">
-            <span class="skill-tag">Python</span><span class="skill-tag">LLMs</span><span class="skill-tag">Zapier</span>
-          </div>
-          <button class="apply-btn">Quick Apply</button>
-        </div>
-        <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">₹25L–₹40L · Posted 5 hours ago</div>
-      </div>
-      <div class="job-card">
-        <div class="jc-top">
-          <div class="jc-left">
-            <div class="co-logo" style="background:rgba(245,158,11,.15);color:#FCD34D">S</div>
-            <div class="jc-info"><h3>Data Analyst — AI Division</h3><p>Swiggy · Bengaluru</p></div>
-          </div>
-          <div class="jc-badges"><span class="jbadge jb-green">91% Match</span></div>
-        </div>
-        <div class="jc-bottom">
-          <div class="jc-tags">
-            <span class="skill-tag">Python</span><span class="skill-tag">SQL</span><span class="skill-tag">Power BI</span>
-          </div>
-          <button class="apply-btn">Quick Apply</button>
-        </div>
-        <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">₹12L–₹20L · Posted 1 day ago</div>
-      </div>
-      <div class="job-card">
-        <div class="jc-top">
-          <div class="jc-left">
-            <div class="co-logo" style="background:rgba(5,150,105,.15);color:#34D399">F</div>
-            <div class="jc-info"><h3>AI Content Strategist</h3><p>Freshworks · Chennai · Remote</p></div>
-          </div>
-          <div class="jc-badges"><span class="jbadge jb-green">88% Match</span></div>
-        </div>
-        <div class="jc-bottom">
-          <div class="jc-tags">
-            <span class="skill-tag">ChatGPT</span><span class="skill-tag">Content</span><span class="skill-tag">SEO</span>
-          </div>
-          <button class="apply-btn">Quick Apply</button>
-        </div>
-        <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">₹8L–₹14L · Posted 2 days ago</div>
       </div>
     </div>
   </div>
@@ -354,154 +408,484 @@ main{position:relative;z-index:1}
 <div class="page fade-in" id="page-dashboard">
   <div class="dash-page">
     <div class="dash-welcome">
-      <h1>Welcome back, Rahul 👋</h1>
-      <p>You have 3 new job matches and 1 course to complete today.</p>
+      <h1 id="dash-title">Your Dashboard 👋</h1>
+      <p id="dash-subtitle">Sign in to see your personalized dashboard</p>
     </div>
     <div class="dash-kpi">
-      <div class="kpi-card"><div class="kpi-icon">📚</div><div class="kpi-val">4</div><div class="kpi-label">Courses Enrolled</div></div>
-      <div class="kpi-card"><div class="kpi-icon">✅</div><div class="kpi-val">12</div><div class="kpi-label">Applications Sent</div></div>
-      <div class="kpi-card"><div class="kpi-icon">🎯</div><div class="kpi-val">3</div><div class="kpi-label">Interviews Scheduled</div></div>
-      <div class="kpi-card"><div class="kpi-icon">⭐</div><div class="kpi-val">87%</div><div class="kpi-label">Profile Score</div></div>
+      <div class="kpi-card"><div class="kpi-icon">📚</div><div class="kpi-val" id="kpi-courses">0</div><div class="kpi-label">Courses Enrolled</div></div>
+      <div class="kpi-card"><div class="kpi-icon">✅</div><div class="kpi-val" id="kpi-apps">0</div><div class="kpi-label">Applications Sent</div></div>
+      <div class="kpi-card"><div class="kpi-icon">🎯</div><div class="kpi-val" id="kpi-interviews">0</div><div class="kpi-label">Interviews</div></div>
+      <div class="kpi-card"><div class="kpi-icon">⭐</div><div class="kpi-val" id="kpi-score">—</div><div class="kpi-label">Profile Score</div></div>
     </div>
     <div class="dash-grid">
       <div class="dash-widget">
-        <h3>📚 Course Progress</h3>
-        <div class="progress-item">
-          <div class="progress-label"><span>ChatGPT Mastery</span><span>78%</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
-        </div>
-        <div class="progress-item">
-          <div class="progress-label"><span>AI Automation</span><span>45%</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
-        </div>
-        <div class="progress-item">
-          <div class="progress-label"><span>Data Analysis</span><span>20%</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
-        </div>
-        <div class="progress-item">
-          <div class="progress-label"><span>AI Marketing</span><span>100%</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,var(--green),#34D399)"></div></div>
-        </div>
+        <h3>📚 My Courses</h3>
+        <div id="dash-courses"><div class="empty-state"><div class="ei">🎓</div><p>No courses enrolled yet.<br>Browse courses to get started!</p></div></div>
       </div>
       <div class="dash-widget">
-        <h3>💼 Recent Applications</h3>
-        <div class="recent-list">
-          <div class="recent-item">
-            <div class="ri-dot" style="background:#F59E0B"></div>
-            <div class="ri-info"><h4>AI Product Manager · Google</h4><p>Applied 2 days ago</p></div>
-            <span class="ri-status" style="background:rgba(245,158,11,.1);color:var(--orange)">In Review</span>
-          </div>
-          <div class="recent-item">
-            <div class="ri-dot" style="background:#059669"></div>
-            <div class="ri-info"><h4>Automation Engineer · Razorpay</h4><p>Applied 4 days ago</p></div>
-            <span class="ri-status" style="background:rgba(5,150,105,.1);color:var(--green)">Interview 🎉</span>
-          </div>
-          <div class="recent-item">
-            <div class="ri-dot" style="background:#5B5EF4"></div>
-            <div class="ri-info"><h4>Data Analyst · Swiggy</h4><p>Applied 6 days ago</p></div>
-            <span class="ri-status" style="background:rgba(91,94,244,.1);color:var(--accent)">Shortlisted</span>
-          </div>
-          <div class="recent-item">
-            <div class="ri-dot" style="background:#94A3B8"></div>
-            <div class="ri-info"><h4>AI Content Lead · Freshworks</h4><p>Applied 1 week ago</p></div>
-            <span class="ri-status" style="background:rgba(148,163,184,.1);color:var(--muted)">Pending</span>
-          </div>
-        </div>
+        <h3>💼 My Applications</h3>
+        <div id="dash-applications"><div class="empty-state"><div class="ei">📋</div><p>No applications yet.<br>Browse jobs and apply!</p></div></div>
       </div>
     </div>
   </div>
 </div>
-
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
 <script>
-// -----------------------------
-// SUPABASE CONFIG
-// -----------------------------
-const SUPABASE_URL = "https://qosncefbfvlazlokzyml.supabase.co"
-const SUPABASE_KEY = "sb_publishable_ZXdPWausb5BQEME_ZSpBZw_3gHqAVqv"
+// ═══════════════════════════════════════════════
+//  CONFIG & STATE
+// ═══════════════════════════════════════════════
+let SB_URL = localStorage.getItem('sb_url') || '';
+let SB_KEY = localStorage.getItem('sb_key') || '';
+let currentUser = null;
+let allCourses = [];
+let allJobs = [];
+let enrolledCourseIds = new Set();
+let appliedJobIds = new Set();
+let currentCategory = 'all';
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+const DEMO_COURSES = [
+  {id:1,title:'ChatGPT Mastery: Zero to Prompt Engineer',description:'Write powerful prompts and 10x your productivity.',category:'AI & ChatGPT',price:1299,original_price:3999,thumbnail:'🤖',bg:'linear-gradient(135deg,#EEF2FF,#E0E7FF)',rating:4.9,students:8200,duration:'12h'},
+  {id:2,title:'No-Code AI Automation with Make & Zapier',description:'Automate workflows without writing a single line of code.',category:'Automation',price:999,original_price:2499,thumbnail:'⚡',bg:'linear-gradient(135deg,#FDF4FF,#F3E8FF)',rating:4.8,students:5100,duration:'8h'},
+  {id:3,title:'AI-Powered Data Analysis with Python',description:'Analyze data and generate insights using AI as your co-pilot.',category:'Data Science',price:1799,original_price:4999,thumbnail:'📊',bg:'linear-gradient(135deg,#ECFDF5,#D1FAE5)',rating:4.7,students:3400,duration:'18h'},
+  {id:4,title:'Midjourney AI Image Generation Masterclass',description:'Create stunning visuals and marketing assets with AI.',category:'AI & ChatGPT',price:0,original_price:1999,thumbnail:'🎨',bg:'linear-gradient(135deg,#FFF7ED,#FEF3C7)',rating:4.9,students:6700,duration:'6h'},
+  {id:5,title:'Build AI Apps Without Code: Bubble & Glide',description:'Launch AI-powered apps without any programming.',category:'No-Code',price:1499,original_price:3499,thumbnail:'📱',bg:'linear-gradient(135deg,#EFF6FF,#DBEAFE)',rating:4.7,students:2800,duration:'14h'},
+  {id:6,title:'AI-Powered Digital Marketing & Content',description:'Use AI to write copy, run smarter ads and grow brands.',category:'Marketing',price:799,original_price:2999,thumbnail:'📈',bg:'linear-gradient(135deg,#FFF1F2,#FFE4E6)',rating:4.8,students:9100,duration:'10h'},
+];
+const DEMO_JOBS = [
+  {id:1,title:'AI Product Manager',company:'Google',location:'Bengaluru · Hybrid',salary:'₹35L–₹55L',type:'Full Time',match:98,featured:true,skills:['ChatGPT','Product Strategy','SQL'],logo_bg:'rgba(91,94,244,.15)',logo_color:'#818CF8',logo_letter:'G',posted:'2 hours ago'},
+  {id:2,title:'AI Automation Engineer',company:'Razorpay',location:'Remote, India',salary:'₹25L–₹40L',type:'Remote',match:95,featured:true,skills:['Python','LLMs','Zapier'],logo_bg:'rgba(6,182,212,.15)',logo_color:'#22D3EE',logo_letter:'R',posted:'5 hours ago'},
+  {id:3,title:'Data Analyst — AI Division',company:'Swiggy',location:'Bengaluru',salary:'₹12L–₹20L',type:'Full Time',match:91,featured:false,skills:['Python','SQL','Power BI'],logo_bg:'rgba(245,158,11,.15)',logo_color:'#FCD34D',logo_letter:'S',posted:'1 day ago'},
+  {id:4,title:'AI Content Strategist',company:'Freshworks',location:'Chennai · Remote',salary:'₹8L–₹14L',type:'Remote',match:88,featured:false,skills:['ChatGPT','Content','SEO'],logo_bg:'rgba(5,150,105,.15)',logo_color:'#34D399',logo_letter:'F',posted:'2 days ago'},
+  {id:5,title:'ML Engineer — NLP',company:'Infosys',location:'Pune · Hybrid',salary:'₹18L–₹30L',type:'Full Time',match:85,featured:false,skills:['Python','NLP','PyTorch'],logo_bg:'rgba(147,51,234,.15)',logo_color:'#C084FC',logo_letter:'I',posted:'3 days ago'},
+];
 
-// -----------------------------
-// PAGE SWITCHING
-// -----------------------------
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
-  document.getElementById('page-' + id).classList.add('active')
-
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
-  if (btn) btn.classList.add('active')
-
-  if (id === "courses") {
-    loadCourses()
-  }
-
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+// ═══════════════════════════════════════════════
+//  SUPABASE API HELPER
+// ═══════════════════════════════════════════════
+async function sbFetch(path, opts={}) {
+  if (!SB_URL || !SB_KEY) return null;
+  const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || '',
+      ...opts.headers
+    },
+    method: opts.method || 'GET',
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if (!res.ok) { const e = await res.json(); throw new Error(e.message||'Supabase error'); }
+  return res.status === 204 ? null : res.json();
 }
 
-// -----------------------------
-// FILTER BUTTON ACTIVE STATE
-// -----------------------------
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', function(){
-    this.closest('.filter-bar')
-      .querySelectorAll('.filter-btn')
-      .forEach(b => b.classList.remove('active'))
+async function sbAuth(action, email, password, name='') {
+  const body = action==='register'
+    ? {email,password,data:{full_name:name}}
+    : {email,password};
+  const res = await fetch(`${SB_URL}/auth/v1/${action==='register'?'signup':'token?grant_type=password'}`, {
+    method:'POST',
+    headers:{'apikey':SB_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (data.error || data.error_description) throw new Error(data.error_description||data.error.message);
+  return data;
+}
 
-    this.classList.add('active')
-  })
-})
+// ═══════════════════════════════════════════════
+//  SETUP / CONFIG
+// ═══════════════════════════════════════════════
+function showSetup() { document.getElementById('setup-modal').classList.remove('hidden'); }
+function closeSetup() {
+  document.getElementById('setup-modal').classList.add('hidden');
+  loadAllData();
+}
+function saveConfig() {
+  const url = document.getElementById('sb-url').value.trim();
+  const key = document.getElementById('sb-key').value.trim();
+  if (!url || !key) { toast('Please enter both URL and key','error'); return; }
+  SB_URL = url; SB_KEY = key;
+  localStorage.setItem('sb_url', url);
+  localStorage.setItem('sb_key', key);
+  closeSetup();
+  document.getElementById('config-banner').classList.add('hidden');
+  document.getElementById('main-nav').classList.remove('with-banner');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('with-banner'));
+  toast('✅ Supabase connected!','success');
+  loadAllData();
+}
 
-// -----------------------------
-// LOAD COURSES (DYNAMIC)
-// -----------------------------
+// ═══════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════
+function openAuth(tab='login') {
+  document.getElementById('auth-modal').classList.remove('hidden');
+  switchAuth(tab, document.querySelectorAll('.auth-tab')[tab==='login'?0:1]);
+  clearAuthMsgs();
+}
+function closeAuth() { document.getElementById('auth-modal').classList.add('hidden'); clearAuthMsgs(); }
+function switchAuth(tab, btn) {
+  document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('login-form').style.display = tab==='login'?'block':'none';
+  document.getElementById('register-form').style.display = tab==='register'?'block':'none';
+  clearAuthMsgs();
+}
+function clearAuthMsgs() {
+  ['auth-error','auth-success'].forEach(id=>{ const el=document.getElementById(id); el.style.display='none'; el.textContent=''; });
+}
+function showAuthMsg(msg,type) {
+  const el = document.getElementById(type==='error'?'auth-error':'auth-success');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-password').value;
+  if (!email||!pass) { showAuthMsg('Please fill all fields','error'); return; }
+  const btn = document.getElementById('login-btn-text');
+  btn.innerHTML = '<span class="spinner"></span>';
+  clearAuthMsgs();
+  try {
+    if (!SB_URL) {
+      // Demo login
+      currentUser = {id:'demo-user',email,user_metadata:{full_name:email.split('@')[0]}};
+      onLoggedIn();
+    } else {
+      const data = await sbAuth('login', email, pass);
+      currentUser = data.user;
+      localStorage.setItem('sb_token', data.access_token);
+      onLoggedIn();
+    }
+    closeAuth();
+    toast('Welcome back! 👋','success');
+  } catch(e) { showAuthMsg(e.message,'error'); }
+  btn.textContent = 'Sign In →';
+}
+
+async function doRegister() {
+  const name = document.getElementById('reg-name').value;
+  const email = document.getElementById('reg-email').value;
+  const pass = document.getElementById('reg-password').value;
+  if (!name||!email||!pass) { showAuthMsg('Please fill all fields','error'); return; }
+  if (pass.length<6) { showAuthMsg('Password must be at least 6 characters','error'); return; }
+  const btn = document.getElementById('reg-btn-text');
+  btn.innerHTML = '<span class="spinner"></span>';
+  clearAuthMsgs();
+  try {
+    if (!SB_URL) {
+      currentUser = {id:'demo-user',email,user_metadata:{full_name:name}};
+      onLoggedIn();
+      closeAuth();
+      toast('Account created! 🎉','success');
+    } else {
+      await sbAuth('register', email, pass, name);
+      showAuthMsg('✅ Account created! Check your email to confirm, then sign in.','success');
+    }
+  } catch(e) { showAuthMsg(e.message,'error'); }
+  btn.textContent = 'Create Account →';
+}
+
+function onLoggedIn() {
+  const name = currentUser?.user_metadata?.full_name || currentUser?.email?.split('@')[0] || 'User';
+  const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('nav-auth').innerHTML = `
+    <div class="user-pill" onclick="doLogout()">
+      <div class="user-avatar">${initials}</div>
+      ${name} · Sign Out
+    </div>`;
+  loadDashboard();
+}
+
+function doLogout() {
+  currentUser = null;
+  localStorage.removeItem('sb_token');
+  enrolledCourseIds.clear();
+  appliedJobIds.clear();
+  document.getElementById('nav-auth').innerHTML = `
+    <button class="btn-ghost" onclick="openAuth('login')">Sign In</button>
+    <button class="btn-primary" onclick="openAuth('register')">Get Started Free</button>`;
+  renderCourses(allCourses);
+  renderJobs(allJobs);
+  loadDashboard();
+  toast('Signed out','');
+}
+
+// ═══════════════════════════════════════════════
+//  LOAD DATA
+// ═══════════════════════════════════════════════
+async function loadAllData() {
+  loadCourses();
+  loadJobs();
+}
+
 async function loadCourses() {
+  try {
+    const data = await sbFetch('courses?order=id');
+    allCourses = data && data.length ? data : DEMO_COURSES;
+  } catch { allCourses = DEMO_COURSES; }
+  renderCourses(allCourses);
+  document.getElementById('stat-courses').textContent = allCourses.length + '+';
+}
 
-  const { data, error } = await supabaseClient
-    .from("courses")
-    .select("*")
-    .order("created_at", { ascending: false })
+async function loadJobs() {
+  try {
+    const data = await sbFetch('jobs?order=match.desc');
+    allJobs = data && data.length ? data : DEMO_JOBS;
+  } catch { allJobs = DEMO_JOBS; }
+  renderJobs(allJobs);
+  document.getElementById('stat-jobs').textContent = allJobs.length < 10 ? allJobs.length : allJobs.length + '+';
+}
 
-  console.log("Courses:", data)
-  console.log("Error:", error)
+async function loadUserEnrollments() {
+  if (!currentUser || !SB_URL) return;
+  try {
+    const data = await sbFetch(`enrollments?user_id=eq.${currentUser.id}&select=course_id`);
+    if (data) data.forEach(e => enrolledCourseIds.add(e.course_id));
+    renderCourses(allCourses);
+  } catch {}
+}
 
-  const container = document.getElementById("coursesContainer")
-  if (!container) return
+async function loadUserApplications() {
+  if (!currentUser || !SB_URL) return;
+  try {
+    const data = await sbFetch(`applications?user_id=eq.${currentUser.id}&select=job_id`);
+    if (data) data.forEach(a => appliedJobIds.add(a.job_id));
+    renderJobs(allJobs);
+  } catch {}
+}
 
-  container.innerHTML = ""
-
-  if (!data || data.length === 0) {
-    container.innerHTML = `<p style="color:#64748B">No courses yet</p>`
-    return
+// ═══════════════════════════════════════════════
+//  RENDER COURSES
+// ═══════════════════════════════════════════════
+function renderCourses(courses) {
+  const grid = document.getElementById('courses-grid');
+  if (!courses.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="ei">🎓</div><p>No courses found.</p></div>';
+    return;
   }
+  grid.innerHTML = courses.map(c => `
+    <div class="course-card fade-in">
+      <div class="course-thumb" style="background:${c.bg||'linear-gradient(135deg,#EEF2FF,#E0E7FF)'}">${c.thumbnail||'📚'}</div>
+      <div class="course-body">
+        <div class="course-cat">${c.category}</div>
+        <h3>${c.title}</h3>
+        <p>${c.description}</p>
+        <div class="stars-sm">${'★'.repeat(Math.floor(c.rating||4))}${'☆'.repeat(5-Math.floor(c.rating||4))}</div>
+        <div class="course-meta">
+          <div class="course-info"><span>🕐 ${c.duration||'8h'}</span><span>👥 ${(c.students||0).toLocaleString()}</span></div>
+          <div class="course-price">${c.price===0?'FREE':'₹'+c.price?.toLocaleString()} <span class="old">₹${c.original_price?.toLocaleString()}</span></div>
+        </div>
+        ${enrolledCourseIds.has(c.id)
+          ? `<div class="enrolled-tag">✅ Enrolled</div>`
+          : `<button class="enroll-btn" onclick="enrollCourse(${c.id})">${c.price===0?'Enroll Free →':'Enroll Now →'}</button>`}
+      </div>
+    </div>`).join('');
+}
 
-  data.forEach(course => {
-    container.innerHTML += `
-      <div class="course-card">
-        <div class="course-thumb" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF)">🚀</div>
-        <div class="course-body">
-          <div class="course-cat">${course.category || "AI"}</div>
-          <h3>${course.title}</h3>
-          <p>${course.description || ""}</p>
-          <div class="course-meta">
-            <div class="course-price">₹${course.price}</div>
-          </div>
-          <button class="enroll-btn">Enroll Now</button>
+function filterCourses(cat, btn) {
+  currentCategory = cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = cat==='all' ? allCourses : allCourses.filter(c=>c.category===cat);
+  renderCourses(filtered);
+}
+
+async function enrollCourse(courseId) {
+  if (!currentUser) { openAuth('login'); toast('Sign in to enroll in courses','error'); return; }
+  try {
+    if (SB_URL) {
+      await sbFetch('enrollments', {
+        method:'POST', prefer:'return=minimal',
+        body:{user_id:currentUser.id, course_id:courseId, progress:0}
+      });
+    }
+    enrolledCourseIds.add(courseId);
+    renderCourses(currentCategory==='all'?allCourses:allCourses.filter(c=>c.category===currentCategory));
+    loadDashboard();
+    toast('🎉 Enrolled successfully!','success');
+    showSQL(`INSERT INTO enrollments (user_id, course_id, progress)\nVALUES ('${currentUser.id}', ${courseId}, 0);`);
+  } catch(e) { toast('Error: '+e.message,'error'); }
+}
+
+// ═══════════════════════════════════════════════
+//  RENDER JOBS
+// ═══════════════════════════════════════════════
+function renderJobs(jobs) {
+  const list = document.getElementById('jobs-list');
+  const count = document.getElementById('jobs-count');
+  count.innerHTML = `Showing <strong>${jobs.length}</strong> jobs matched to your profile`;
+  if (!jobs.length) {
+    list.innerHTML = '<div class="empty-state"><div class="ei">💼</div><p>No jobs found with these filters.</p></div>';
+    return;
+  }
+  list.innerHTML = jobs.map(j => `
+    <div class="job-card ${j.featured?'featured':''} fade-in">
+      <div class="jc-top">
+        <div class="jc-left">
+          <div class="co-logo" style="background:${j.logo_bg||'rgba(91,94,244,.15)'};color:${j.logo_color||'#818CF8'}">${j.logo_letter||j.company?.[0]||'?'}</div>
+          <div class="jc-info"><h3>${j.title}</h3><p>${j.company} · ${j.location}</p></div>
+        </div>
+        <div class="jc-badges">
+          ${j.match?`<span class="jbadge jb-green">${j.match}% Match</span>`:''}
+          ${j.featured?`<span class="jbadge jb-blue">Featured</span>`:''}
         </div>
       </div>
-    `
-  })
+      <div class="jc-bottom">
+        <div class="jc-tags">${(j.skills||[]).map(s=>`<span class="skill-tag">${s}</span>`).join('')}</div>
+        ${appliedJobIds.has(j.id)
+          ? `<span class="applied-tag">✅ Applied</span>`
+          : `<button class="apply-btn" onclick="applyJob(${j.id})">Quick Apply</button>`}
+      </div>
+      <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">${j.salary||''} · Posted ${j.posted||'recently'}</div>
+    </div>`).join('');
 }
 
-// -----------------------------
-// LOAD ON PAGE OPEN
-// -----------------------------
-document.addEventListener("DOMContentLoaded", () => {
-  loadCourses()
-})
+function applyJobFilters() {
+  const q = document.getElementById('job-search-input').value.toLowerCase();
+  const salary = parseInt(document.querySelector('.salary-range').value);
+  const filtered = allJobs.filter(j => {
+    const matchText = !q || j.title.toLowerCase().includes(q) || j.company?.toLowerCase().includes(q) || (j.skills||[]).some(s=>s.toLowerCase().includes(q));
+    const salNum = parseInt((j.salary||'0').replace(/[^\d]/g,'').slice(0,4)||0);
+    const matchSal = salNum <= salary*100 || salary >= 50;
+    return matchText && matchSal;
+  });
+  renderJobs(filtered);
+}
+
+async function applyJob(jobId) {
+  if (!currentUser) { openAuth('login'); toast('Sign in to apply for jobs','error'); return; }
+  try {
+    if (SB_URL) {
+      await sbFetch('applications', {
+        method:'POST', prefer:'return=minimal',
+        body:{user_id:currentUser.id, job_id:jobId, status:'applied'}
+      });
+    }
+    appliedJobIds.add(jobId);
+    renderJobs(allJobs);
+    loadDashboard();
+    toast('🚀 Application submitted!','success');
+    showSQL(`INSERT INTO applications (user_id, job_id, status)\nVALUES ('${currentUser.id}', ${jobId}, 'applied');`);
+  } catch(e) { toast('Error: '+e.message,'error'); }
+}
+
+// ═══════════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════════
+async function loadDashboard() {
+  if (!currentUser) {
+    document.getElementById('dash-title').textContent = 'Your Dashboard 👋';
+    document.getElementById('dash-subtitle').textContent = 'Sign in to see your personalized dashboard';
+    document.getElementById('kpi-courses').textContent = '0';
+    document.getElementById('kpi-apps').textContent = '0';
+    document.getElementById('kpi-interviews').textContent = '0';
+    document.getElementById('kpi-score').textContent = '—';
+    document.getElementById('dash-courses').innerHTML = '<div class="empty-state"><div class="ei">🎓</div><p>Sign in to see your courses</p></div>';
+    document.getElementById('dash-applications').innerHTML = '<div class="empty-state"><div class="ei">📋</div><p>Sign in to see your applications</p></div>';
+    return;
+  }
+
+  let enrollments = [], applications = [];
+  try {
+    if (SB_URL) {
+      const [e,a] = await Promise.all([
+        sbFetch(`enrollments?user_id=eq.${currentUser.id}&select=*,courses(*)`),
+        sbFetch(`applications?user_id=eq.${currentUser.id}&select=*,jobs(*)`)
+      ]);
+      enrollments = e||[]; applications = a||[];
+    } else {
+      // Demo: use in-memory state
+      enrollments = [...enrolledCourseIds].map(id=>({course_id:id,progress:Math.floor(Math.random()*80+10),courses:allCourses.find(c=>c.id===id)||{title:'Course '+id}}));
+      applications = [...appliedJobIds].map(id=>({job_id:id,status:'applied',jobs:allJobs.find(j=>j.id===id)||{title:'Job '+id,company:'Company'}}));
+    }
+  } catch {}
+
+  const name = currentUser?.user_metadata?.full_name || currentUser?.email?.split('@')[0] || 'User';
+  document.getElementById('dash-title').textContent = `Welcome back, ${name} 👋`;
+  document.getElementById('dash-subtitle').textContent = `You have ${enrollments.length} course${enrollments.length!==1?'s':''} and ${applications.length} application${applications.length!==1?'s':''}.`;
+  document.getElementById('kpi-courses').textContent = enrollments.length;
+  document.getElementById('kpi-apps').textContent = applications.length;
+  document.getElementById('kpi-interviews').textContent = applications.filter(a=>a.status==='interview').length;
+  const score = enrollments.length > 0 ? Math.min(100,60+enrollments.length*8+applications.length*3)+'%' : '—';
+  document.getElementById('kpi-score').textContent = score;
+
+  // Courses widget
+  document.getElementById('dash-courses').innerHTML = enrollments.length
+    ? enrollments.map(e=>{
+        const c = e.courses||{};
+        const p = e.progress||0;
+        return `<div class="progress-item">
+          <div class="progress-label"><span>${c.title||'Course'}</span><span>${p}%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${p}%;${p>=100?'background:linear-gradient(90deg,var(--green),#34D399)':''}"></div></div>
+        </div>`;}).join('')
+    : '<div class="empty-state"><div class="ei">🎓</div><p>No courses yet</p></div>';
+
+  // Applications widget
+  const statusStyle = {applied:'background:rgba(245,158,11,.1);color:var(--orange)',interview:'background:rgba(5,150,105,.1);color:var(--green)',rejected:'background:rgba(239,68,68,.1);color:var(--red)',shortlisted:'background:rgba(91,94,244,.1);color:var(--accent)'};
+  document.getElementById('dash-applications').innerHTML = applications.length
+    ? applications.map(a=>{
+        const j = a.jobs||{};
+        const st = a.status||'applied';
+        const dot = {applied:'#F59E0B',interview:'#059669',rejected:'#EF4444',shortlisted:'#5B5EF4'}[st]||'#94A3B8';
+        return `<div class="recent-item">
+          <div class="ri-dot" style="background:${dot}"></div>
+          <div class="ri-info"><h4>${j.title||'Job'}</h4><p>${j.company||''}</p></div>
+          <span class="ri-status" style="${statusStyle[st]||''}">${st.charAt(0).toUpperCase()+st.slice(1)}</span>
+        </div>`;}).join('')
+    : '<div class="empty-state"><div class="ei">📋</div><p>No applications yet</p></div>';
+}
+
+// ═══════════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════════
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    const i = ['home','courses','jobs','dashboard'].indexOf(id);
+    if (i>=0) document.querySelectorAll('.tab-btn')[i].classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (id==='dashboard') loadDashboard();
+}
+
+let toastTimer;
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = type ? `show ${type}` : 'show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.className=''; },3500);
+}
+
+function showSQL(sql) {
+  document.getElementById('sql-content').innerHTML = `<code>${sql}</code>`;
+  document.getElementById('sql-panel').classList.add('show');
+  setTimeout(()=>document.getElementById('sql-panel').classList.remove('show'),5000);
+}
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+window.addEventListener('load', () => {
+  if (SB_URL && SB_KEY) {
+    document.getElementById('config-banner').classList.add('hidden');
+    document.getElementById('main-nav').classList.remove('with-banner');
+    document.getElementById('setup-modal').classList.add('hidden');
+  }
+  loadAllData();
+  // Check existing session
+  const token = localStorage.getItem('sb_token');
+  if (token && SB_URL) {
+    fetch(`${SB_URL}/auth/v1/user`, {
+      headers:{'apikey':SB_KEY,'Authorization':`Bearer ${token}`}
+    }).then(r=>r.json()).then(u=>{ if(u.id){ currentUser=u; onLoggedIn(); }}).catch(()=>{});
+  }
+});
 </script>
 </body>
 </html>
