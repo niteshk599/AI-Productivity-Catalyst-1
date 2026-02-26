@@ -234,8 +234,7 @@ main{position:relative;z-index:1}
 </div>
 
 <!-- SETUP MODAL -->
-<div id="setup-modal">
-  <div class="modal-box">
+<div id="setup-modal" class="hidden" style="position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px">
     <h2>🔌 Connect Supabase</h2>
     <p>Enter your Supabase credentials to connect the live backend. Your data stays in your own Supabase project.</p>
     <div class="modal-steps">
@@ -726,7 +725,7 @@ function closeSetup() {
   document.getElementById('setup-modal').classList.add('hidden');
   loadAllData().then(() => {
     renderAdminTable();
-    // Restore admin session if still active
+    // Restore admin session only — never show login popup on load
     if (sessionStorage.getItem('admin_session')) {
       isAdminLoggedIn = true;
       const adminBtn = document.getElementById('admin-tab-btn');
