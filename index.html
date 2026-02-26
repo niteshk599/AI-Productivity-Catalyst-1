@@ -278,6 +278,21 @@ main{position:relative;z-index:1}
   </div>
 </div>
 
+<!-- EDIT MODAL -->
+<div id="edit-modal" class="hidden" style="position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border-radius:20px;padding:36px;max-width:500px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.2);position:relative">
+    <button onclick="closeEditModal()" style="position:absolute;top:14px;right:14px;border:none;background:var(--surface2);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px">✕</button>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px" id="edit-modal-title">Edit Course</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:22px">Changes save to Supabase instantly (or update demo data locally)</p>
+    <input type="hidden" id="edit-id">
+    <input type="hidden" id="edit-type">
+    <div id="edit-fields"></div>
+    <button onclick="saveEdit()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px">
+      <span id="save-btn-text">💾 Save Changes</span>
+    </button>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div id="toast"></div>
 
@@ -298,6 +313,7 @@ main{position:relative;z-index:1}
     <button class="tab-btn" onclick="showPage('courses',this)">Courses</button>
     <button class="tab-btn" onclick="showPage('jobs',this)">Jobs</button>
     <button class="tab-btn" onclick="showPage('dashboard',this)">Dashboard</button>
+    <button class="tab-btn" onclick="showPage('admin',this)">⚙️ Admin</button>
   </div>
   <div class="nav-right" id="nav-auth">
     <button class="btn-ghost" onclick="openAuth('login')">Sign In</button>
@@ -429,6 +445,34 @@ main{position:relative;z-index:1}
     </div>
   </div>
 </div>
+<!-- ADMIN -->
+<div class="page fade-in" id="page-admin">
+  <div style="max-width:1100px;margin:0 auto;padding:36px 40px 80px">
+    <div style="margin-bottom:28px">
+      <div class="badge">⚙️ Admin Panel</div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:36px;font-weight:800;margin:10px 0 8px">Manage Content</h1>
+      <p style="color:var(--muted);font-size:15px">Edit course names, titles, prices and job listings directly here.</p>
+    </div>
+
+    <!-- TABS -->
+    <div style="display:flex;gap:8px;margin-bottom:24px">
+      <button class="filter-btn active" id="admin-tab-courses" onclick="switchAdminTab('courses',this)">🎓 Courses (${allCourses.length})</button>
+      <button class="filter-btn" id="admin-tab-jobs" onclick="switchAdminTab('jobs',this)">💼 Jobs</button>
+    </div>
+
+    <!-- ADD BUTTON ROW -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <p style="font-size:13px;color:var(--muted)" id="admin-count">Showing all courses</p>
+      <button class="btn-primary" style="font-size:13px;padding:9px 20px" onclick="openAddModal()">+ Add New</button>
+    </div>
+
+    <!-- TABLE -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 2px 16px rgba(91,94,244,.07)">
+      <div id="admin-table"></div>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <script>
@@ -500,7 +544,7 @@ async function sbAuth(action, email, password, name='') {
 function showSetup() { document.getElementById('setup-modal').classList.remove('hidden'); }
 function closeSetup() {
   document.getElementById('setup-modal').classList.add('hidden');
-  loadAllData();
+  loadAllData().then(() => renderAdminTable());
 }
 function saveConfig() {
   const url = document.getElementById('sb-url').value.trim();
@@ -866,6 +910,206 @@ function showSQL(sql) {
   document.getElementById('sql-content').innerHTML = `<code>${sql}</code>`;
   document.getElementById('sql-panel').classList.add('show');
   setTimeout(()=>document.getElementById('sql-panel').classList.remove('show'),5000);
+}
+
+// ═══════════════════════════════════════════════
+//  ADMIN PANEL
+// ═══════════════════════════════════════════════
+let adminTab = 'courses';
+
+function switchAdminTab(tab, btn) {
+  adminTab = tab;
+  document.querySelectorAll('#page-admin .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAdminTable();
+}
+
+function renderAdminTable() {
+  const tbl = document.getElementById('admin-table');
+  if (adminTab === 'courses') {
+    document.getElementById('admin-count').textContent = `Showing ${allCourses.length} courses`;
+    tbl.innerHTML = `
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="background:var(--surface2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)">
+            <th style="padding:14px 20px;text-align:left">Thumbnail</th>
+            <th style="padding:14px 20px;text-align:left">Title</th>
+            <th style="padding:14px 20px;text-align:left">Category</th>
+            <th style="padding:14px 20px;text-align:left">Price</th>
+            <th style="padding:14px 20px;text-align:left">Students</th>
+            <th style="padding:14px 20px;text-align:left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${allCourses.map(c => `
+            <tr style="border-top:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='rgba(91,94,244,.03)'" onmouseout="this.style.background=''">
+              <td style="padding:14px 20px;font-size:22px">${c.thumbnail||'📚'}</td>
+              <td style="padding:14px 20px">
+                <div style="font-size:14px;font-weight:600;max-width:280px;line-height:1.4">${c.title}</div>
+                <div style="font-size:12px;color:var(--muted);margin-top:2px">${(c.description||'').slice(0,60)}...</div>
+              </td>
+              <td style="padding:14px 20px"><span style="background:rgba(91,94,244,.1);color:var(--accent);font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px">${c.category}</span></td>
+              <td style="padding:14px 20px;font-weight:700;font-size:14px">${c.price===0?'<span style="color:var(--green)">FREE</span>':'₹'+c.price?.toLocaleString()}</td>
+              <td style="padding:14px 20px;font-size:13px;color:var(--muted)">${(c.students||0).toLocaleString()}</td>
+              <td style="padding:14px 20px">
+                <div style="display:flex;gap:8px">
+                  <button onclick="openEditModal('course',${c.id})" style="padding:6px 14px;background:rgba(91,94,244,.1);color:var(--accent);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">✏️ Edit</button>
+                  <button onclick="deleteItem('course',${c.id})" style="padding:6px 14px;background:rgba(239,68,68,.08);color:var(--red);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">🗑️</button>
+                </div>
+              </td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  } else {
+    document.getElementById('admin-count').textContent = `Showing ${allJobs.length} jobs`;
+    tbl.innerHTML = `
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="background:var(--surface2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)">
+            <th style="padding:14px 20px;text-align:left">Company</th>
+            <th style="padding:14px 20px;text-align:left">Job Title</th>
+            <th style="padding:14px 20px;text-align:left">Location</th>
+            <th style="padding:14px 20px;text-align:left">Salary</th>
+            <th style="padding:14px 20px;text-align:left">Match %</th>
+            <th style="padding:14px 20px;text-align:left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${allJobs.map(j => `
+            <tr style="border-top:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='rgba(91,94,244,.03)'" onmouseout="this.style.background=''">
+              <td style="padding:14px 20px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div style="width:36px;height:36px;border-radius:8px;background:${j.logo_bg||'rgba(91,94,244,.15)'};color:${j.logo_color||'#818CF8'};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px">${j.logo_letter||'?'}</div>
+                  <span style="font-weight:600;font-size:13px">${j.company}</span>
+                </div>
+              </td>
+              <td style="padding:14px 20px;font-size:14px;font-weight:600">${j.title}</td>
+              <td style="padding:14px 20px;font-size:13px;color:var(--muted)">${j.location}</td>
+              <td style="padding:14px 20px;font-size:13px;font-weight:600">${j.salary}</td>
+              <td style="padding:14px 20px"><span style="background:rgba(5,150,105,.1);color:var(--green);font-size:12px;font-weight:700;padding:3px 10px;border-radius:100px">${j.match}%</span></td>
+              <td style="padding:14px 20px">
+                <div style="display:flex;gap:8px">
+                  <button onclick="openEditModal('job',${j.id})" style="padding:6px 14px;background:rgba(91,94,244,.1);color:var(--accent);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">✏️ Edit</button>
+                  <button onclick="deleteItem('job',${j.id})" style="padding:6px 14px;background:rgba(239,68,68,.08);color:var(--red);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">🗑️</button>
+                </div>
+              </td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+}
+
+// ── EDIT MODAL ──
+function openEditModal(type, id) {
+  const item = type==='course' ? allCourses.find(c=>c.id===id) : allJobs.find(j=>j.id===id);
+  if (!item) return;
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-type').value = type;
+  document.getElementById('edit-modal-title').textContent = type==='course' ? '✏️ Edit Course' : '✏️ Edit Job';
+  const fields = type==='course'
+    ? [
+        {key:'title',label:'Course Title',val:item.title,type:'text'},
+        {key:'description',label:'Description',val:item.description,type:'textarea'},
+        {key:'category',label:'Category',val:item.category,type:'select',opts:['AI & ChatGPT','Automation','Data Science','No-Code','Marketing']},
+        {key:'price',label:'Price (₹) — enter 0 for Free',val:item.price,type:'number'},
+        {key:'original_price',label:'Original Price (₹)',val:item.original_price,type:'number'},
+        {key:'thumbnail',label:'Thumbnail Emoji',val:item.thumbnail,type:'text'},
+        {key:'duration',label:'Duration (e.g. 8h)',val:item.duration,type:'text'},
+      ]
+    : [
+        {key:'title',label:'Job Title',val:item.title,type:'text'},
+        {key:'company',label:'Company Name',val:item.company,type:'text'},
+        {key:'location',label:'Location',val:item.location,type:'text'},
+        {key:'salary',label:'Salary Range',val:item.salary,type:'text'},
+        {key:'match',label:'Match % (0–100)',val:item.match,type:'number'},
+        {key:'logo_letter',label:'Company Logo Letter',val:item.logo_letter,type:'text'},
+      ];
+
+  document.getElementById('edit-fields').innerHTML = fields.map(f => `
+    <div class="input-group" style="margin-bottom:14px">
+      <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">${f.label}</label>
+      ${f.type==='textarea'
+        ? `<textarea id="ef-${f.key}" rows="2" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--surface2);outline:none;resize:vertical">${f.val||''}</textarea>`
+        : f.type==='select'
+        ? `<select id="ef-${f.key}" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--surface2);outline:none">${f.opts.map(o=>`<option${o===f.val?' selected':''}>${o}</option>`).join('')}</select>`
+        : `<input id="ef-${f.key}" type="${f.type}" value="${f.val||''}" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--surface2);outline:none">`
+      }
+    </div>`).join('');
+
+  document.getElementById('edit-modal').classList.remove('hidden');
+  document.getElementById('edit-modal').style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.add('hidden');
+  document.getElementById('edit-modal').style.display = 'none';
+}
+
+async function saveEdit() {
+  const id = parseInt(document.getElementById('edit-id').value);
+  const type = document.getElementById('edit-type').value;
+  const btn = document.getElementById('save-btn-text');
+  btn.innerHTML = '<span class="spinner"></span> Saving...';
+
+  const fields = type==='course'
+    ? ['title','description','category','price','original_price','thumbnail','duration']
+    : ['title','company','location','salary','match','logo_letter'];
+
+  const updates = {};
+  fields.forEach(k => {
+    const el = document.getElementById('ef-'+k);
+    if (el) updates[k] = el.tagName==='INPUT'&&el.type==='number' ? Number(el.value) : el.value;
+  });
+
+  try {
+    if (SB_URL) {
+      const table = type==='course' ? 'courses' : 'jobs';
+      await sbFetch(`${table}?id=eq.${id}`, {method:'PATCH', prefer:'return=minimal', body:updates});
+    }
+    // Update local state
+    if (type==='course') {
+      const idx = allCourses.findIndex(c=>c.id===id);
+      if (idx>=0) allCourses[idx] = {...allCourses[idx],...updates};
+      renderCourses(allCourses);
+    } else {
+      const idx = allJobs.findIndex(j=>j.id===id);
+      if (idx>=0) allJobs[idx] = {...allJobs[idx],...updates};
+      renderJobs(allJobs);
+    }
+    renderAdminTable();
+    closeEditModal();
+    toast('✅ Changes saved!','success');
+    showSQL(`UPDATE ${type==='course'?'courses':'jobs'}\nSET title='${updates.title}'\nWHERE id=${id};`);
+  } catch(e) { toast('Error: '+e.message,'error'); }
+  btn.textContent = '💾 Save Changes';
+}
+
+function openAddModal() {
+  const type = adminTab==='courses' ? 'course' : 'job';
+  const newId = Date.now();
+  if (type==='course') {
+    allCourses.push({id:newId,title:'New Course',description:'Course description',category:'AI & ChatGPT',price:999,original_price:1999,thumbnail:'📚',bg:'linear-gradient(135deg,#EEF2FF,#E0E7FF)',rating:4.5,students:0,duration:'4h'});
+    renderCourses(allCourses);
+  } else {
+    allJobs.push({id:newId,title:'New Job',company:'Company',location:'Remote',salary:'₹10L–₹15L',match:80,featured:false,skills:[],logo_bg:'rgba(91,94,244,.15)',logo_color:'#818CF8',logo_letter:'C',posted:'just now'});
+    renderJobs(allJobs);
+  }
+  renderAdminTable();
+  openEditModal(type, newId);
+}
+
+async function deleteItem(type, id) {
+  if (!confirm(`Delete this ${type}? This cannot be undone.`)) return;
+  try {
+    if (SB_URL) {
+      const table = type==='course' ? 'courses' : 'jobs';
+      await sbFetch(`${table}?id=eq.${id}`, {method:'DELETE', prefer:'return=minimal'});
+    }
+    if (type==='course') { allCourses = allCourses.filter(c=>c.id!==id); renderCourses(allCourses); }
+    else { allJobs = allJobs.filter(j=>j.id!==id); renderJobs(allJobs); }
+    renderAdminTable();
+    toast('🗑️ Deleted','');
+  } catch(e) { toast('Error: '+e.message,'error'); }
 }
 
 // ═══════════════════════════════════════════════
