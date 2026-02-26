@@ -234,88 +234,7 @@ main{position:relative;z-index:1}
       <button class="filter-btn">Free</button>
     </div>
   </div>
-<div class="courses-grid" id="coursesContainer">
-</div>
-    <div class="course-card">
-      <div class="course-thumb" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF)">🤖</div>
-      <div class="course-body">
-        <div class="course-cat">AI & ChatGPT</div>
-        <h3>ChatGPT Mastery: From Zero to Prompt Engineer</h3>
-        <p>Learn to write powerful prompts, build AI workflows and 10x your productivity at work.</p>
-        <div class="course-meta">
-          <div><div class="stars-sm">★★★★★</div><div class="course-info"><span>🕐 12h</span><span>👥 8.2K</span></div></div>
-          <div class="course-price">₹1,299 <span class="old">₹3,999</span></div>
-        </div>
-        <button class="enroll-btn">Enroll Now</button>
-      </div>
-    </div>
-    <div class="course-card">
-      <div class="course-thumb" style="background:linear-gradient(135deg,#FDF4FF,#F3E8FF)">⚡</div>
-      <div class="course-body">
-        <div class="course-cat">Automation</div>
-        <h3>No-Code AI Automation with Make & Zapier</h3>
-        <p>Automate repetitive tasks and build powerful workflows without writing a single line of code.</p>
-        <div class="course-meta">
-          <div><div class="stars-sm">★★★★★</div><div class="course-info"><span>🕐 8h</span><span>👥 5.1K</span></div></div>
-          <div class="course-price">₹999 <span class="old">₹2,499</span></div>
-        </div>
-        <button class="enroll-btn">Enroll Now</button>
-      </div>
-    </div>
-    <div class="course-card">
-      <div class="course-thumb" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5)">📊</div>
-      <div class="course-body">
-        <div class="course-cat">Data Science</div>
-        <h3>AI-Powered Data Analysis with Python & ChatGPT</h3>
-        <p>Analyze data, create visualizations and generate insights using AI as your co-pilot.</p>
-        <div class="course-meta">
-          <div><div class="stars-sm">★★★★☆</div><div class="course-info"><span>🕐 18h</span><span>👥 3.4K</span></div></div>
-          <div class="course-price">₹1,799 <span class="old">₹4,999</span></div>
-        </div>
-        <button class="enroll-btn">Enroll Now</button>
-      </div>
-    </div>
-    <div class="course-card">
-      <div class="course-thumb" style="background:linear-gradient(135deg,#FFF7ED,#FEF3C7)">🎨</div>
-      <div class="course-body">
-        <div class="course-cat">AI Design</div>
-        <h3>Midjourney & AI Image Generation Masterclass</h3>
-        <p>Create stunning visuals, logos, and marketing assets using AI image generation tools.</p>
-        <div class="course-meta">
-          <div><div class="stars-sm">★★★★★</div><div class="course-info"><span>🕐 6h</span><span>👥 6.7K</span></div></div>
-          <div class="course-price">FREE <span class="old">₹1,999</span></div>
-        </div>
-        <button class="enroll-btn" style="background:var(--green)">Enroll Free</button>
-      </div>
-    </div>
-    <div class="course-card">
-      <div class="course-thumb" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE)">📱</div>
-      <div class="course-body">
-        <div class="course-cat">No-Code</div>
-        <h3>Build AI Apps Without Code Using Bubble & Glide</h3>
-        <p>Launch your own AI-powered web and mobile apps without any programming knowledge.</p>
-        <div class="course-meta">
-          <div><div class="stars-sm">★★★★☆</div><div class="course-info"><span>🕐 14h</span><span>👥 2.8K</span></div></div>
-          <div class="course-price">₹1,499 <span class="old">₹3,499</span></div>
-        </div>
-        <button class="enroll-btn">Enroll Now</button>
-      </div>
-    </div>
-    <div class="course-card">
-      <div class="course-thumb" style="background:linear-gradient(135deg,#FFF1F2,#FFE4E6)">📈</div>
-      <div class="course-body">
-        <div class="course-cat">Marketing</div>
-        <h3>AI-Powered Digital Marketing & Content Creation</h3>
-        <p>Use AI to write copy, generate content, run ads smarter and grow any brand 10x faster.</p>
-        <div class="course-meta">
-          <div><div class="stars-sm">★★★★★</div><div class="course-info"><span>🕐 10h</span><span>👥 9.1K</span></div></div>
-          <div class="course-price">₹799 <span class="old">₹2,999</span></div>
-        </div>
-        <button class="enroll-btn">Enroll Now</button>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="courses-grid" id="coursesContainer"></div>
 
 <!-- JOBS -->
 <div class="page fade-in" id="page-jobs">
@@ -496,17 +415,22 @@ main{position:relative;z-index:1}
 </main>
 
 <script>
+<script>
 function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  else {
-    const tabs = ['home','courses','jobs','dashboard'];
-    const i = tabs.indexOf(id);
-    if(i >= 0) document.querySelectorAll('.tab-btn')[i].classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+  document.getElementById('page-' + id).classList.add('active')
+
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+  if (btn) btn.classList.add('active')
+
+  // 🔥 Load courses dynamically
+  if (id === "courses") {
+    loadCourses()
   }
-  window.scrollTo({top:0,behavior:'smooth'});
+
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+</script>
 }
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', function(){
@@ -522,7 +446,48 @@ const SUPABASE_URL = "https://qosncefbfvlazlokzyml.supabase.co"
 const SUPABASE_KEY = "sb_publishable_ZXdPWausb5BQEME_ZSpBZw_3gHqAVqv"
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+<script>
+async function loadCourses() {
+  const { data, error } = await supabaseClient
+    .from("courses")
+    .select("*")
+    .order("created_at", { ascending: false })
 
+  console.log("Courses:", data)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  const container = document.getElementById("coursesContainer")
+  if (!container) return
+
+  container.innerHTML = ""
+
+  if (!data || data.length === 0) {
+    container.innerHTML = `<p style="color:#64748B">No courses yet</p>`
+    return
+  }
+
+  data.forEach(course => {
+    container.innerHTML += `
+      <div class="course-card">
+        <div class="course-thumb" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF)">🚀</div>
+        <div class="course-body">
+          <div class="course-cat">${course.category}</div>
+          <h3>${course.title}</h3>
+          <p>${course.description}</p>
+          <div class="course-meta">
+            <div class="course-price">₹${course.price}</div>
+          </div>
+          <button class="enroll-btn">Enroll Now</button>
+        </div>
+      </div>
+    `
+  })
+}
+</script>
 // TEST CONNECTION
 async function testConnection() {
   const { data, error } = await supabaseClient.from("courses").select("*")
