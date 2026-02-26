@@ -636,6 +636,25 @@ main{position:relative;z-index:1}
 
 </main>
 
+<!-- FOOTER with hidden admin link -->
+<footer style="border-top:1px solid var(--border);padding:28px 40px;background:var(--surface2);position:relative;z-index:1">
+  <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <p style="font-size:12.5px;color:var(--muted)">© 2026 SkillLaunch. All rights reserved.</p>
+    <div style="display:flex;gap:20px;align-items:center">
+      <span style="font-size:12.5px;color:var(--muted)">Privacy · Terms · Support</span>
+      <!-- Hidden admin entry — subtle, only those who know will click it -->
+      <span 
+        id="footer-admin-link"
+        onclick="isAdminLoggedIn ? (showPage('admin',document.getElementById('admin-tab-btn')),renderAdminTable()) : openAdminLogin()"
+        title="Admin"
+        style="font-size:12px;color:transparent;cursor:default;user-select:none;padding:4px 8px;border-radius:6px;transition:all .3s"
+        onmouseover="this.style.color='var(--muted)';this.style.background='var(--surface)';this.style.cursor='pointer'"
+        onmouseout="this.style.color='transparent';this.style.background='transparent';this.style.cursor='default'"
+      >⚙ Admin</span>
+    </div>
+  </div>
+</footer>
+
 <script>
 // ═══════════════════════════════════════════════
 //  CONFIG & STATE
@@ -1635,6 +1654,19 @@ async function deleteItem(type, id) {
 // ═══════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════
+// Secret shortcut: Ctrl + Shift + A
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+    e.preventDefault();
+    if (isAdminLoggedIn) {
+      showPage('admin', document.getElementById('admin-tab-btn'));
+      renderAdminTable();
+    } else {
+      openAdminLogin();
+    }
+  }
+});
+
 window.addEventListener('load', () => {
   if (SB_URL && SB_KEY) {
     document.getElementById('config-banner').classList.add('hidden');
