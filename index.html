@@ -205,6 +205,12 @@ main{position:relative;z-index:1}
 #sql-panel code{color:#7DD3FC;font-family:monospace}
 #sql-panel .close-sql{float:right;cursor:pointer;color:var(--muted);margin-top:-2px}
 
+.fp-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s}
+.active-dot{background:var(--accent);width:24px;border-radius:100px}
+.req-item{font-size:12px;color:var(--muted);padding:3px 0;transition:color .2s;font-weight:500}
+.req-ok{color:var(--green) !important}
+.req-ok::first-letter{content:'✅'}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeUp .4s ease both}
 
@@ -278,6 +284,123 @@ main{position:relative;z-index:1}
   </div>
 </div>
 
+<!-- FORGOT PASSWORD MODAL -->
+<div id="forgot-modal" class="hidden" style="position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border-radius:20px;padding:40px;max-width:440px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.25);position:relative">
+
+    <!-- STEP 1: Enter Email -->
+    <div id="fp-step1">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,#F59E0B,#EF4444);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px">🔑</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px">Forgot Password?</h2>
+        <p style="color:var(--muted);font-size:13.5px;line-height:1.6">Enter your admin email and we'll send you a reset link or OTP to regain access.</p>
+      </div>
+      <div id="fp-error1" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none"></div>
+      <div style="margin-bottom:18px">
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Admin Email</label>
+        <input id="fp-email" type="email" placeholder="admin@yourdomain.com" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')sendResetOTP()">
+      </div>
+      <!-- Method toggle -->
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Reset Method</label>
+        <div style="display:flex;gap:8px">
+          <button id="method-email" onclick="selectMethod('email',this)" style="flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--accent);background:rgba(91,94,244,.08);color:var(--accent);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s">📧 Email Link</button>
+          <button id="method-otp" onclick="selectMethod('otp',this)" style="flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s">🔢 OTP Code</button>
+        </div>
+        <p id="method-desc" style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6">A secure reset link will be sent to your email. Click it to set a new password.</p>
+      </div>
+      <button onclick="sendResetOTP()" style="width:100%;padding:13px;background:linear-gradient(135deg,#F59E0B,#EF4444);border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(245,158,11,.3);transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
+        <span id="fp-send-btn">Send Reset →</span>
+      </button>
+      <button onclick="closeForgotPassword()" style="display:block;width:100%;margin-top:10px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px">← Back to Login</button>
+    </div>
+
+    <!-- STEP 2: Enter OTP -->
+    <div id="fp-step2" style="display:none">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px">🔢</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px">Enter OTP</h2>
+        <p id="fp-otp-desc" style="color:var(--muted);font-size:13.5px;line-height:1.6">A 6-digit code was sent to <strong id="fp-sent-to"></strong>. It expires in <span id="otp-timer" style="color:var(--accent);font-weight:700">05:00</span></p>
+      </div>
+      <div id="fp-error2" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none"></div>
+      <!-- OTP boxes -->
+      <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px">
+        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,0)" onkeydown="otpKey(event,0)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
+        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,1)" onkeydown="otpKey(event,1)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
+        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,2)" onkeydown="otpKey(event,2)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
+        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,3)" onkeydown="otpKey(event,3)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
+        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,4)" onkeydown="otpKey(event,4)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
+        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,5)" onkeydown="otpKey(event,5)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
+      </div>
+      <button onclick="verifyOTP()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(91,94,244,.3);margin-bottom:10px">
+        <span id="fp-verify-btn">Verify OTP →</span>
+      </button>
+      <div style="text-align:center">
+        <span id="resend-area" style="font-size:13px;color:var(--muted)">Didn't get it? <span id="resend-btn" onclick="resendOTP()" style="color:var(--accent);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Resend Code</span></span>
+      </div>
+      <button onclick="fpGoBack(1)" style="display:block;width:100%;margin-top:12px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px">← Change Email</button>
+    </div>
+
+    <!-- STEP 3: New Password -->
+    <div id="fp-step3" style="display:none">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--green),#34D399);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px">🛡️</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px">Set New Password</h2>
+        <p style="color:var(--muted);font-size:13.5px;line-height:1.6">Choose a strong new password for your admin account.</p>
+      </div>
+      <div id="fp-error3" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none"></div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">New Password</label>
+        <div style="position:relative">
+          <input id="fp-new-pass" type="password" placeholder="Min 8 characters" oninput="checkPasswordStrength(this.value)" style="width:100%;padding:12px 46px 12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')document.getElementById('fp-confirm-pass').focus()">
+          <button onclick="togglePwd('fp-new-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;font-size:16px;color:var(--muted)">👁</button>
+        </div>
+        <!-- Strength bar -->
+        <div style="margin-top:8px">
+          <div style="height:4px;background:var(--surface2);border-radius:100px;overflow:hidden">
+            <div id="strength-bar" style="height:100%;width:0%;border-radius:100px;transition:all .3s"></div>
+          </div>
+          <p id="strength-label" style="font-size:11px;color:var(--muted);margin-top:4px;font-weight:600"></p>
+        </div>
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Confirm Password</label>
+        <div style="position:relative">
+          <input id="fp-confirm-pass" type="password" placeholder="Repeat password" style="width:100%;padding:12px 46px 12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')saveNewPassword()">
+          <button onclick="togglePwd('fp-confirm-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;font-size:16px;color:var(--muted)">👁</button>
+        </div>
+      </div>
+      <!-- Requirements checklist -->
+      <div style="background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:18px">
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Password Requirements</p>
+        <div id="req-length"  class="req-item">⬜ At least 8 characters</div>
+        <div id="req-upper"   class="req-item">⬜ One uppercase letter</div>
+        <div id="req-number"  class="req-item">⬜ One number</div>
+        <div id="req-special" class="req-item">⬜ One special character (!@#$...)</div>
+      </div>
+      <button onclick="saveNewPassword()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--green),#059669);border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(5,150,105,.3)">
+        <span id="fp-save-btn">Save New Password →</span>
+      </button>
+    </div>
+
+    <!-- STEP 4: Success -->
+    <div id="fp-step4" style="display:none;text-align:center;padding:10px 0">
+      <div style="width:72px;height:72px;background:linear-gradient(135deg,var(--green),#34D399);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px;box-shadow:0 8px 32px rgba(5,150,105,.3)">✅</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:10px">Password Updated!</h2>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:28px">Your admin password has been changed successfully. You can now log in with your new password.</p>
+      <button onclick="fpGoToLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(91,94,244,.3)">Go to Login →</button>
+    </div>
+
+    <!-- Step indicator -->
+    <div id="fp-steps-indicator" style="display:flex;justify-content:center;gap:8px;margin-top:24px">
+      <div class="fp-dot active-dot" id="dot-1"></div>
+      <div class="fp-dot" id="dot-2"></div>
+      <div class="fp-dot" id="dot-3"></div>
+      <div class="fp-dot" id="dot-4"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ADMIN LOGIN MODAL -->
 <div id="admin-login-modal" class="hidden" style="position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--surface);border-radius:20px;padding:40px;max-width:420px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.25);position:relative">
@@ -301,8 +424,11 @@ main{position:relative;z-index:1}
     <button onclick="doAdminLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(91,94,244,.3);transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
       <span id="admin-login-btn-text">Unlock Admin Panel →</span>
     </button>
-    <button onclick="closeAdminLogin()" style="display:block;width:100%;margin-top:12px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px">Cancel</button>
-    <div style="margin-top:20px;background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7">
+    <div style="text-align:center;margin-top:14px">
+      <span onclick="openForgotPassword()" style="font-size:13px;color:var(--accent);cursor:pointer;font-weight:600;text-decoration:underline;text-underline-offset:3px">Forgot password?</span>
+    </div>
+    <button onclick="closeAdminLogin()" style="display:block;width:100%;margin-top:10px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px">Cancel</button>
+    <div style="margin-top:16px;background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7">
       <strong style="color:var(--text)">💡 Demo credentials:</strong><br>
       Email: <code style="background:rgba(91,94,244,.1);color:var(--accent);padding:1px 6px;border-radius:4px">admin@skillaunch.com</code><br>
       Password: <code style="background:rgba(91,94,244,.1);color:var(--accent);padding:1px 6px;border-radius:4px">admin123</code>
@@ -957,6 +1083,253 @@ function showSQL(sql) {
 }
 
 // ═══════════════════════════════════════════════
+//  FORGOT PASSWORD FLOW
+// ═══════════════════════════════════════════════
+let fpMethod       = 'email';   // 'email' | 'otp'
+let generatedOTP   = '';
+let otpTimerHandle = null;
+let newAdminPassword = '';
+
+function openForgotPassword() {
+  closeAdminLogin();
+  fpGoToStep(1);
+  document.getElementById('forgot-modal').classList.remove('hidden');
+  document.getElementById('forgot-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('fp-email').focus(), 120);
+}
+
+function closeForgotPassword() {
+  document.getElementById('forgot-modal').classList.add('hidden');
+  document.getElementById('forgot-modal').style.display = 'none';
+  clearInterval(otpTimerHandle);
+  openAdminLogin();
+}
+
+function fpGoToStep(n) {
+  [1,2,3,4].forEach(i => {
+    document.getElementById(`fp-step${i}`).style.display = i===n ? 'block' : 'none';
+    const dot = document.getElementById(`dot-${i}`);
+    dot.className = i===n ? 'fp-dot active-dot' : (i<n ? 'fp-dot' : 'fp-dot');
+    dot.style.background = i < n ? 'var(--accent)' : i===n ? 'var(--accent)' : 'var(--border)';
+    dot.style.width = i===n ? '24px' : '8px';
+  });
+  // Hide step indicator on success screen
+  document.getElementById('fp-steps-indicator').style.display = n===4 ? 'none' : 'flex';
+}
+
+function fpGoBack(toStep) { fpGoToStep(toStep); }
+
+function selectMethod(m, btn) {
+  fpMethod = m;
+  document.getElementById('method-email').style.border = '1.5px solid var(--border)';
+  document.getElementById('method-email').style.background = 'transparent';
+  document.getElementById('method-email').style.color = 'var(--muted)';
+  document.getElementById('method-otp').style.border = '1.5px solid var(--border)';
+  document.getElementById('method-otp').style.background = 'transparent';
+  document.getElementById('method-otp').style.color = 'var(--muted)';
+  btn.style.border = '1.5px solid var(--accent)';
+  btn.style.background = 'rgba(91,94,244,.08)';
+  btn.style.color = 'var(--accent)';
+  document.getElementById('method-desc').textContent = m==='email'
+    ? 'A secure reset link will be sent to your email. Click it to set a new password.'
+    : 'A 6-digit one-time code will be sent to your email. Enter it to continue.';
+  document.getElementById('fp-send-btn').textContent = m==='email' ? 'Send Reset Link →' : 'Send OTP Code →';
+}
+
+async function sendResetOTP() {
+  const email = document.getElementById('fp-email').value.trim();
+  const errEl = document.getElementById('fp-error1');
+  const btn   = document.getElementById('fp-send-btn');
+  errEl.style.display = 'none';
+
+  if (!email) { errEl.textContent='Please enter your email.'; errEl.style.display='block'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent='Please enter a valid email.'; errEl.style.display='block'; return; }
+
+  btn.innerHTML = '<span class="spinner"></span> Sending...';
+
+  await new Promise(r => setTimeout(r, 900));
+
+  if (fpMethod === 'email') {
+    // Supabase password reset email
+    if (SB_URL) {
+      try {
+        await fetch(`${SB_URL}/auth/v1/recover`, {
+          method: 'POST',
+          headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+      } catch {}
+    }
+    btn.textContent = 'Send Reset Link →';
+    // Show "email sent" UI — go straight to step 3 for demo, or show a confirmation
+    document.getElementById('fp-step1').style.display = 'none';
+    document.getElementById('forgot-modal').querySelector('div').innerHTML = `
+      <div style="text-align:center;padding:20px 0">
+        <div style="width:64px;height:64px;background:linear-gradient(135deg,#F59E0B,#EF4444);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 18px">📧</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:10px">Check Your Inbox!</h2>
+        <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:8px">A password reset link was sent to</p>
+        <p style="font-weight:700;font-size:15px;margin-bottom:24px;color:var(--accent)">${email}</p>
+        <p style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:24px">Click the link in the email to set your new password. Check your spam folder if you don't see it.</p>
+        <button onclick="closeForgotPassword()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer">Back to Login</button>
+        <p style="font-size:12px;color:var(--muted);margin-top:14px">Didn't receive it? <span onclick="openForgotPassword()" style="color:var(--accent);cursor:pointer;font-weight:700;text-decoration:underline">Try again</span></p>
+      </div>`;
+    return;
+  }
+
+  // OTP flow
+  generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+  console.log(`%c[DEV] OTP for ${email}: ${generatedOTP}`, 'background:#818CF8;color:#fff;padding:4px 10px;border-radius:6px;font-weight:bold');
+
+  // If Supabase connected, you'd call your edge function here to send real email
+  // For demo: OTP is shown in browser console
+
+  document.getElementById('fp-sent-to').textContent = email;
+  // Clear OTP boxes
+  document.querySelectorAll('.otp-box').forEach(b => { b.value=''; b.style.borderColor='var(--border)'; b.style.background='var(--surface2)'; });
+  fpGoToStep(2);
+  startOTPTimer(300); // 5 minutes
+  setTimeout(() => document.querySelectorAll('.otp-box')[0].focus(), 100);
+
+  btn.textContent = 'Send OTP Code →';
+  toast('📨 OTP sent! Check browser console for demo code.', 'success');
+}
+
+// ── OTP boxes navigation ──
+function otpInput(el, idx) {
+  el.value = el.value.replace(/[^0-9]/g,'');
+  if (el.value && idx < 5) {
+    document.querySelectorAll('.otp-box')[idx+1].focus();
+  }
+  // Auto-verify when all filled
+  const vals = [...document.querySelectorAll('.otp-box')].map(b=>b.value);
+  if (vals.every(v=>v)) verifyOTP();
+}
+
+function otpKey(e, idx) {
+  if (e.key==='Backspace' && !e.target.value && idx > 0) {
+    document.querySelectorAll('.otp-box')[idx-1].focus();
+  }
+  if (e.key==='ArrowLeft'  && idx > 0) document.querySelectorAll('.otp-box')[idx-1].focus();
+  if (e.key==='ArrowRight' && idx < 5) document.querySelectorAll('.otp-box')[idx+1].focus();
+}
+
+async function verifyOTP() {
+  const entered = [...document.querySelectorAll('.otp-box')].map(b=>b.value).join('');
+  const errEl   = document.getElementById('fp-error2');
+  const btn     = document.getElementById('fp-verify-btn');
+  errEl.style.display = 'none';
+
+  if (entered.length < 6) { errEl.textContent='Please enter all 6 digits.'; errEl.style.display='block'; return; }
+
+  btn.innerHTML = '<span class="spinner"></span> Verifying...';
+  await new Promise(r => setTimeout(r, 700));
+
+  if (entered === generatedOTP) {
+    clearInterval(otpTimerHandle);
+    // Highlight all green
+    document.querySelectorAll('.otp-box').forEach(b => { b.style.borderColor='var(--green)'; b.style.background='rgba(5,150,105,.06)'; });
+    setTimeout(() => fpGoToStep(3), 400);
+  } else {
+    document.querySelectorAll('.otp-box').forEach(b => { b.style.borderColor='var(--red)'; b.style.background='rgba(239,68,68,.05)'; });
+    errEl.textContent='❌ Wrong OTP. Please try again.';
+    errEl.style.display='block';
+    document.querySelectorAll('.otp-box').forEach(b => b.value='');
+    document.querySelectorAll('.otp-box')[0].focus();
+  }
+  btn.textContent = 'Verify OTP →';
+}
+
+function resendOTP() {
+  generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+  console.log(`%c[DEV] New OTP: ${generatedOTP}`, 'background:#818CF8;color:#fff;padding:4px 10px;border-radius:6px;font-weight:bold');
+  document.querySelectorAll('.otp-box').forEach(b => { b.value=''; b.style.borderColor='var(--border)'; b.style.background='var(--surface2)'; });
+  startOTPTimer(300);
+  toast('📨 New OTP sent! Check console.','success');
+}
+
+function startOTPTimer(seconds) {
+  clearInterval(otpTimerHandle);
+  let s = seconds;
+  const el = document.getElementById('otp-timer');
+  otpTimerHandle = setInterval(() => {
+    s--;
+    const m = Math.floor(s/60), sec = s%60;
+    el.textContent = `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    el.style.color = s < 60 ? 'var(--red)' : 'var(--accent)';
+    if (s <= 0) {
+      clearInterval(otpTimerHandle);
+      el.textContent = 'Expired';
+      el.style.color = 'var(--red)';
+      document.getElementById('fp-error2').textContent = '⏰ OTP expired. Please request a new one.';
+      document.getElementById('fp-error2').style.display = 'block';
+    }
+  }, 1000);
+}
+
+// ── Password strength ──
+function checkPasswordStrength(val) {
+  const reqs = {
+    length:  val.length >= 8,
+    upper:   /[A-Z]/.test(val),
+    number:  /[0-9]/.test(val),
+    special: /[!@#$%^&*(),.?":{}|<>]/.test(val),
+  };
+  const score = Object.values(reqs).filter(Boolean).length;
+  const bar   = document.getElementById('strength-bar');
+  const label = document.getElementById('strength-label');
+  const colors  = ['','#EF4444','#F59E0B','#3B82F6','var(--green)'];
+  const labels  = ['','Weak','Fair','Good','Strong 💪'];
+  bar.style.width   = score * 25 + '%';
+  bar.style.background = colors[score] || 'var(--border)';
+  label.textContent = val ? labels[score] : '';
+  label.style.color = colors[score];
+
+  const setReq = (id, ok) => {
+    const el = document.getElementById(id);
+    el.textContent = (ok ? '✅' : '⬜') + el.textContent.slice(2);
+    el.className   = 'req-item' + (ok?' req-ok':'');
+  };
+  setReq('req-length',  reqs.length);
+  setReq('req-upper',   reqs.upper);
+  setReq('req-number',  reqs.number);
+  setReq('req-special', reqs.special);
+}
+
+async function saveNewPassword() {
+  const np   = document.getElementById('fp-new-pass').value;
+  const cp   = document.getElementById('fp-confirm-pass').value;
+  const errEl = document.getElementById('fp-error3');
+  const btn  = document.getElementById('fp-save-btn');
+  errEl.style.display = 'none';
+
+  if (np.length < 8)  { errEl.textContent='Password must be at least 8 characters.'; errEl.style.display='block'; return; }
+  if (!/[A-Z]/.test(np)) { errEl.textContent='Add at least one uppercase letter.'; errEl.style.display='block'; return; }
+  if (!/[0-9]/.test(np)) { errEl.textContent='Add at least one number.'; errEl.style.display='block'; return; }
+  if (np !== cp)      { errEl.textContent='Passwords do not match.'; errEl.style.display='block'; return; }
+
+  btn.innerHTML = '<span class="spinner"></span> Saving...';
+  await new Promise(r => setTimeout(r, 800));
+
+  // In real app with Supabase: use the token from the reset email link
+  // supabase.auth.updateUser({ password: np })
+  // For demo: update the in-memory constant
+  newAdminPassword = np;
+  // Patch the constant (demo only — in prod this updates Supabase)
+  window.__adminPwdOverride = np;
+
+  fpGoToStep(4);
+  btn.textContent = 'Save New Password →';
+}
+
+function fpGoToLogin() {
+  document.getElementById('forgot-modal').classList.add('hidden');
+  document.getElementById('forgot-modal').style.display = 'none';
+  clearInterval(otpTimerHandle);
+  openAdminLogin();
+  toast('Password updated! Please sign in.','success');
+}
+
+// ═══════════════════════════════════════════════
 //  ADMIN AUTH
 // ═══════════════════════════════════════════════
 // ⚠️ Change these to your real admin credentials
@@ -1020,7 +1393,7 @@ async function doAdminLogin() {
     }
   } else {
     // Demo mode — hardcoded credentials
-    if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
+    if (email === ADMIN_EMAIL && (pass === ADMIN_PASSWORD || pass === window.__adminPwdOverride)) {
       grantAdminAccess(email);
     } else {
       errEl.textContent = '❌ Wrong email or password. Try demo credentials below.';
