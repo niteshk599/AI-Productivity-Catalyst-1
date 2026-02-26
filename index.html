@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillLaunch — AI Courses & Dream Jobs</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F6F8FF; --surface:#fff; --surface2:#F0F3FF;
+  --accent:#5B5EF4; --accent2:#9333EA; --accent3:#06B6D4;
+  --green:#059669; --orange:#F59E0B;
+  --text:#0F172A; --muted:#64748B; --border:rgba(91,94,244,0.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* BG */
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(91,94,244,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(91,94,244,.05) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+.blob{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0}
+.blob1{width:500px;height:500px;background:rgba(91,94,244,.09);top:-150px;right:-100px}
+.blob2{width:400px;height:400px;background:rgba(147,51,234,.07);bottom:0;left:-100px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(246,248,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;letter-spacing:-.5px;text-decoration:none;color:var(--text)}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo span{color:var(--accent)}
+.nav-tabs{display:flex;gap:4px}
+.tab-btn{padding:7px 16px;border-radius:8px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);transition:all .2s}
+.tab-btn.active,.tab-btn:hover{background:rgba(91,94,244,.1);color:var(--accent)}
+.nav-right{display:flex;gap:10px}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;transition:all .2s}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;padding:9px 20px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;box-shadow:0 0 20px rgba(91,94,244,.3);transition:all .2s}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(91,94,244,.5)}
+
+main{position:relative;z-index:1}
+
+/* PAGES */
+.page{display:none;padding-top:64px}
+.page.active{display:block}
+
+/* ===== HOME PAGE ===== */
+.hero{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px 60px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(91,94,244,.1);border:1px solid rgba(91,94,244,.25);padding:6px 16px;border-radius:100px;font-size:12px;font-weight:700;color:var(--accent);margin-bottom:28px;letter-spacing:.3px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(38px,6vw,70px);font-weight:800;line-height:1.1;letter-spacing:-1px;margin-bottom:20px}
+.grad{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:17px;color:var(--muted);max-width:540px;margin:0 auto 36px;line-height:1.75}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-lg{padding:14px 30px;font-size:15px;font-weight:700;border-radius:10px}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);padding:14px 30px;font-size:15px;font-weight:500;border-radius:10px;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-outline:hover{border-color:rgba(91,94,244,.4);background:rgba(91,94,244,.04)}
+.stats{display:flex;gap:52px;margin-top:64px;flex-wrap:wrap;justify-content:center}
+.stat-num{font-size:28px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:12px;color:var(--muted);font-weight:500;margin-top:4px}
+
+/* Home 2-col */
+.home-grid{max-width:1200px;margin:0 auto;padding:80px 40px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.home-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;cursor:pointer;transition:all .3s;box-shadow:0 2px 16px rgba(91,94,244,.07);position:relative;overflow:hidden}
+.home-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(91,94,244,.04),transparent);opacity:0;transition:opacity .3s}
+.home-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(91,94,244,.14);border-color:rgba(91,94,244,.3)}
+.home-card:hover::before{opacity:1}
+.card-icon{font-size:40px;margin-bottom:20px}
+.home-card h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;margin-bottom:12px;letter-spacing:-.3px}
+.home-card p{color:var(--muted);font-size:14.5px;line-height:1.75;margin-bottom:24px}
+.card-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(91,94,244,.1);color:var(--accent);font-size:12px;font-weight:700;padding:4px 12px;border-radius:100px}
+
+/* ===== COURSES PAGE ===== */
+.page-hero{padding:80px 40px 40px;max-width:1200px;margin:0 auto}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,46px);font-weight:800;letter-spacing:-.5px;margin-bottom:12px}
+.page-hero p{color:var(--muted);font-size:16px;max-width:520px;line-height:1.7}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.filter-btn{padding:7px 18px;border-radius:100px;border:1px solid var(--border);background:var(--surface);font-family:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s}
+.filter-btn.active,.filter-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.courses-grid{max-width:1200px;margin:0 auto;padding:0 40px 80px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.course-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .3s;box-shadow:0 2px 12px rgba(91,94,244,.06);cursor:pointer}
+.course-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(91,94,244,.14);border-color:rgba(91,94,244,.3)}
+.course-thumb{height:160px;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative}
+.course-body{padding:20px}
+.course-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px}
+.course-card h3{font-size:15px;font-weight:700;letter-spacing:-.2px;margin-bottom:8px;line-height:1.4}
+.course-card p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px}
+.course-meta{display:flex;align-items:center;justify-content:space-between}
+.course-info{display:flex;gap:10px;font-size:12px;color:var(--muted)}
+.course-price{font-size:16px;font-weight:800;letter-spacing:-.5px}
+.course-price .old{font-size:12px;font-weight:400;color:var(--muted);text-decoration:line-through;margin-left:4px}
+.stars-sm{color:#F59E0B;font-size:11px}
+.enroll-btn{width:100%;margin-top:14px;padding:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.enroll-btn:hover{opacity:.9;transform:translateY(-1px)}
+
+/* ===== JOBS PAGE ===== */
+.jobs-layout{max-width:1200px;margin:0 auto;padding:20px 40px 80px;display:grid;grid-template-columns:280px 1fr;gap:20px}
+.jobs-sidebar{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;height:fit-content;position:sticky;top:84px}
+.jobs-sidebar h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px;margin-top:20px}
+.jobs-sidebar h3:first-child{margin-top:0}
+.filter-group{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.checkbox-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;padding:4px 0}
+.checkbox-item input{accent-color:var(--accent);width:14px;height:14px}
+.salary-range{width:100%;accent-color:var(--accent);margin:8px 0}
+.jobs-main{}
+.jobs-search{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;gap:12px;align-items:center;margin-bottom:16px;box-shadow:0 2px 12px rgba(91,94,244,.07)}
+.jobs-search input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;color:var(--text);background:transparent}
+.jobs-search input::placeholder{color:var(--muted)}
+.jobs-count{font-size:13px;color:var(--muted);margin-bottom:12px;font-weight:500}
+.job-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px;cursor:pointer;transition:all .2s;box-shadow:0 1px 8px rgba(91,94,244,.05)}
+.job-card:hover{border-color:rgba(91,94,244,.35);box-shadow:0 6px 24px rgba(91,94,244,.12);transform:translateX(3px)}
+.job-card.featured{border-color:rgba(91,94,244,.3);background:rgba(91,94,244,.02)}
+.jc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.jc-left{display:flex;align-items:center;gap:12px}
+.co-logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;font-family:'Inter',sans-serif}
+.jc-info h3{font-size:14.5px;font-weight:700;letter-spacing:-.2px;margin-bottom:3px}
+.jc-info p{font-size:12.5px;color:var(--muted)}
+.jc-badges{display:flex;gap:6px;flex-wrap:wrap}
+.jbadge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px}
+.jb-green{background:rgba(5,150,105,.1);color:var(--green);border:1px solid rgba(5,150,105,.2)}
+.jb-blue{background:rgba(91,94,244,.1);color:var(--accent);border:1px solid rgba(91,94,244,.2)}
+.jb-orange{background:rgba(245,158,11,.1);color:var(--orange);border:1px solid rgba(245,158,11,.2)}
+.jc-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.jc-tags{display:flex;gap:6px;flex-wrap:wrap}
+.skill-tag{background:var(--surface2);font-size:11.5px;font-weight:500;padding:3px 10px;border-radius:6px;color:var(--muted)}
+.apply-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:8px 20px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.apply-btn:hover{opacity:.9;transform:translateY(-1px)}
+
+/* ===== DASHBOARD ===== */
+.dash-page{max-width:1200px;margin:0 auto;padding:30px 40px 80px}
+.dash-welcome{margin-bottom:32px}
+.dash-welcome h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;margin-bottom:6px}
+.dash-welcome p{color:var(--muted);font-size:15px}
+.dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(91,94,244,.06)}
+.kpi-icon{font-size:22px;margin-bottom:12px}
+.kpi-val{font-size:26px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.kpi-label{font-size:12px;color:var(--muted);font-weight:500;margin-top:4px}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.dash-widget{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 2px 10px rgba(91,94,244,.06)}
+.dash-widget h3{font-size:14px;font-weight:700;margin-bottom:16px;letter-spacing:-.2px}
+.progress-item{margin-bottom:14px}
+.progress-label{display:flex;justify-content:space-between;font-size:13px;font-weight:500;margin-bottom:6px}
+.progress-bar{height:6px;background:var(--surface2);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.recent-list{}
+.recent-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.recent-item:last-child{border-bottom:none}
+.ri-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ri-info{flex:1}
+.ri-info h4{font-size:13px;font-weight:600;margin-bottom:2px}
+.ri-info p{font-size:12px;color:var(--muted)}
+.ri-status{font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .5s ease both}
+
+@media(max-width:900px){
+  .home-grid,.courses-grid,.dash-grid,.dash-kpi{grid-template-columns:1fr}
+  .jobs-layout{grid-template-columns:1fr}
+  .jobs-sidebar{display:none}
+  nav{padding:0 16px}
+  .hero,.page-hero{padding-left:20px;padding-right:20px}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+
+<nav>
+  <a href="#" class="logo" onclick="showPage('home')">
+    <div class="logo-icon">🚀</div>
+    Skill<span>Launch</span>
+  </a>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showPage('home',this)">Home</button>
+    <button class="tab-btn" onclick="showPage('courses',this)">Courses</button>
+    <button class="tab-btn" onclick="showPage('jobs',this)">Jobs</button>
+    <button class="tab-btn" onclick="showPage('dashboard',this)">Dashboard</button>
+  </div>
+  <div class="nav-right">
+    <button class="btn-ghost">Sign In</button>
+    <button class="btn-primary">Get Started Free</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- HOME -->
+<div class="page active fade-in" id="page-home">
+  <section class="hero">
+    <div class="badge">✦ AI-Powered Learning + Career Platform</div>
+    <h1>Learn. Grow.<br><span class="grad">Get Hired.</span></h1>
+    <p>Master AI productivity skills with top courses, then land your dream job — all in one platform built for India's next-gen workforce.</p>
+    <div class="hero-btns">
+      <button class="btn-primary btn-lg" onclick="showPage('courses', document.querySelectorAll('.tab-btn')[1])">Explore Courses →</button>
+      <button class="btn-outline" onclick="showPage('jobs', document.querySelectorAll('.tab-btn')[2])">Browse Jobs</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Students Enrolled</div></div>
+      <div class="stat"><div class="stat-num">200+</div><div class="stat-label">AI Courses</div></div>
+      <div class="stat"><div class="stat-num">5L+</div><div class="stat-label">Jobs Listed</div></div>
+      <div class="stat"><div class="stat-num">92%</div><div class="stat-label">Placement Rate</div></div>
+    </div>
+  </section>
+  <div class="home-grid">
+    <div class="home-card" onclick="showPage('courses', document.querySelectorAll('.tab-btn')[1])">
+      <div class="card-icon">🎓</div>
+      <h2>AI Productivity Courses</h2>
+      <p>Learn ChatGPT, Prompt Engineering, AI Tools for Business, No-Code Automation, and more — curated for working professionals and students.</p>
+      <div class="card-tag">200+ Courses · Start Free ✦</div>
+    </div>
+    <div class="home-card" onclick="showPage('jobs', document.querySelectorAll('.tab-btn')[2])">
+      <div class="card-icon">💼</div>
+      <h2>AI-Matched Job Portal</h2>
+      <p>Get matched to top roles at Google, Infosys, Razorpay & 500+ companies. Our AI scores your profile against every job listing in real time.</p>
+      <div class="card-tag">5L+ Jobs · AI Matching ✦</div>
+    </div>
+  </div>
+</div>
+
+<!-- COURSES -->
+<div class="page fade-in" id="page-courses">
+  <div class="page-hero">
+    <div class="badge">🎓 200+ Expert-Led Courses</div>
+    <h1>Master AI Skills That<br><span class="grad">Get You Hired</span></h1>
+    <p>From beginner to advanced — learn ChatGPT, automation, data analysis and more with hands-on projects.</p>
+    <div class="filter-bar">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">AI & ChatGPT</button>
+      <button class="filter-btn">Automation</button>
+      <button class="filter-btn">Data Science</button>
+      <button class="filter-btn">No-Code</button>
+      <button class="filter-btn">Marketing</button>
+      <button class="filter-btn">Free</button>
+    </div>
+  </div>
+  <div class="courses-grid">
+    <div class="course-card">
+      <div class="course-thumb" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF)">🤖</div>
+      <div class="course-body">
+        <div class="course-cat">AI & ChatGPT</div>
+        <h3>ChatGPT Mastery: From Zero to Prompt Engineer</h3>
+        <p>Learn to write powerful prompts, build AI workflows and 10x your productivity at work.</p>
+        <div class="course-meta">
+          <div><div class="stars-sm">★★★★★</div><div class="course-info"><span>🕐 12h</span><span>👥 8.2K</span></div></div>
+          <div class="course-price">₹1,299 <span class="old">₹3,999</span></div>
+        </div>
+        <button class="enroll-btn">Enroll Now</button>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb" style="background:linear-gradient(135deg,#FDF4FF,#F3E8FF)">⚡</div>
+      <div class="course-body">
+        <div class="course-cat">Automation</div>
+        <h3>No-Code AI Automation with Make & Zapier</h3>
+        <p>Automate repetitive tasks and build powerful workflows without writing a single line of code.</p>
+        <div class="course-meta">
+          <div><div class="stars-sm">★★★★★</div><div class="course-info"><span>🕐 8h</span><span>👥 5.1K</span></div></div>
+          <div class="course-price">₹999 <span class="old">₹2,499</span></div>
+        </div>
+        <button class="enroll-btn">Enroll Now</button>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5)">📊</div>
+      <div class="course-body">
+        <div class="course-cat">Data Science</div>
+        <h3>AI-Powered Data Analysis with Python & ChatGPT</h3>
+        <p>Analyze data, create visualizations and generate insights using AI as your co-pilot.</p>
+        <div class="course-meta">
+          <div><div class="stars-sm">★★★★☆</div><div class="course-info"><span>🕐 18h</span><span>👥 3.4K</span></div></div>
+          <div class="course-price">₹1,799 <span class="old">₹4,999</span></div>
+        </div>
+        <button class="enroll-btn">Enroll Now</button>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb" style="background:linear-gradient(135deg,#FFF7ED,#FEF3C7)">🎨</div>
+      <div class="course-body">
+        <div class="course-cat">AI Design</div>
+        <h3>Midjourney & AI Image Generation Masterclass</h3>
+        <p>Create stunning visuals, logos, and marketing assets using AI image generation tools.</p>
+        <div class="course-meta">
+          <div><div class="stars-sm">★★★★★</div><div class="course-info"><span>🕐 6h</span><span>👥 6.7K</span></div></div>
+          <div class="course-price">FREE <span class="old">₹1,999</span></div>
+        </div>
+        <button class="enroll-btn" style="background:var(--green)">Enroll Free</button>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE)">📱</div>
+      <div class="course-body">
+        <div class="course-cat">No-Code</div>
+        <h3>Build AI Apps Without Code Using Bubble & Glide</h3>
+        <p>Launch your own AI-powered web and mobile apps without any programming knowledge.</p>
+        <div class="course-meta">
+          <div><div class="stars-sm">★★★★☆</div><div class="course-info"><span>🕐 14h</span><span>👥 2.8K</span></div></div>
+          <div class="course-price">₹1,499 <span class="old">₹3,499</span></div>
+        </div>
+        <button class="enroll-btn">Enroll Now</button>
+      </div>
+    </div>
+    <div class="course-card">
+      <div class="course-thumb" style="background:linear-gradient(135deg,#FFF1F2,#FFE4E6)">📈</div>
+      <div class="course-body">
+        <div class="course-cat">Marketing</div>
+        <h3>AI-Powered Digital Marketing & Content Creation</h3>
+        <p>Use AI to write copy, generate content, run ads smarter and grow any brand 10x faster.</p>
+        <div class="course-meta">
+          <div><div class="stars-sm">★★★★★</div><div class="course-info"><span>🕐 10h</span><span>👥 9.1K</span></div></div>
+          <div class="course-price">₹799 <span class="old">₹2,999</span></div>
+        </div>
+        <button class="enroll-btn">Enroll Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JOBS -->
+<div class="page fade-in" id="page-jobs">
+  <div class="page-hero">
+    <div class="badge">💼 5,00,000+ Live Jobs</div>
+    <h1>Find Jobs That Match<br><span class="grad">Your AI Skills</span></h1>
+    <p>Our AI matches you to roles where your new skills are most valued — updated daily from top companies.</p>
+  </div>
+  <div class="jobs-layout">
+    <aside class="jobs-sidebar">
+      <h3>Experience</h3>
+      <div class="filter-group">
+        <label class="checkbox-item"><input type="checkbox" checked> Fresher (0–1 yr)</label>
+        <label class="checkbox-item"><input type="checkbox" checked> Mid (2–5 yrs)</label>
+        <label class="checkbox-item"><input type="checkbox"> Senior (5+ yrs)</label>
+      </div>
+      <h3>Job Type</h3>
+      <div class="filter-group">
+        <label class="checkbox-item"><input type="checkbox" checked> Full Time</label>
+        <label class="checkbox-item"><input type="checkbox" checked> Remote</label>
+        <label class="checkbox-item"><input type="checkbox"> Internship</label>
+        <label class="checkbox-item"><input type="checkbox"> Freelance</label>
+      </div>
+      <h3>Salary (LPA)</h3>
+      <input type="range" class="salary-range" min="3" max="50" value="20">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>₹3L</span><span>₹20L+</span></div>
+      <h3>Location</h3>
+      <div class="filter-group">
+        <label class="checkbox-item"><input type="checkbox" checked> Bengaluru</label>
+        <label class="checkbox-item"><input type="checkbox"> Mumbai</label>
+        <label class="checkbox-item"><input type="checkbox"> Delhi NCR</label>
+        <label class="checkbox-item"><input type="checkbox" checked> Remote</label>
+      </div>
+    </aside>
+    <div class="jobs-main">
+      <div class="jobs-search">
+        <span>🔍</span>
+        <input type="text" placeholder="Search by title, skill, company...">
+        <button class="btn-primary" style="padding:8px 20px;font-size:13px">Search</button>
+      </div>
+      <div class="jobs-count">Showing <strong>2,847</strong> jobs matched to your profile</div>
+      <div class="job-card featured">
+        <div class="jc-top">
+          <div class="jc-left">
+            <div class="co-logo" style="background:rgba(91,94,244,.15);color:#818CF8">G</div>
+            <div class="jc-info"><h3>AI Product Manager</h3><p>Google · Bengaluru · Hybrid</p></div>
+          </div>
+          <div class="jc-badges">
+            <span class="jbadge jb-green">98% Match</span>
+            <span class="jbadge jb-blue">Featured</span>
+          </div>
+        </div>
+        <div class="jc-bottom">
+          <div class="jc-tags">
+            <span class="skill-tag">ChatGPT</span><span class="skill-tag">Product Strategy</span><span class="skill-tag">SQL</span>
+          </div>
+          <button class="apply-btn">Quick Apply</button>
+        </div>
+        <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">₹35L–₹55L · Posted 2 hours ago</div>
+      </div>
+      <div class="job-card featured">
+        <div class="jc-top">
+          <div class="jc-left">
+            <div class="co-logo" style="background:rgba(6,182,212,.15);color:#22D3EE">R</div>
+            <div class="jc-info"><h3>AI Automation Engineer</h3><p>Razorpay · Remote, India</p></div>
+          </div>
+          <div class="jc-badges">
+            <span class="jbadge jb-green">95% Match</span>
+            <span class="jbadge jb-orange">Hot 🔥</span>
+          </div>
+        </div>
+        <div class="jc-bottom">
+          <div class="jc-tags">
+            <span class="skill-tag">Python</span><span class="skill-tag">LLMs</span><span class="skill-tag">Zapier</span>
+          </div>
+          <button class="apply-btn">Quick Apply</button>
+        </div>
+        <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">₹25L–₹40L · Posted 5 hours ago</div>
+      </div>
+      <div class="job-card">
+        <div class="jc-top">
+          <div class="jc-left">
+            <div class="co-logo" style="background:rgba(245,158,11,.15);color:#FCD34D">S</div>
+            <div class="jc-info"><h3>Data Analyst — AI Division</h3><p>Swiggy · Bengaluru</p></div>
+          </div>
+          <div class="jc-badges"><span class="jbadge jb-green">91% Match</span></div>
+        </div>
+        <div class="jc-bottom">
+          <div class="jc-tags">
+            <span class="skill-tag">Python</span><span class="skill-tag">SQL</span><span class="skill-tag">Power BI</span>
+          </div>
+          <button class="apply-btn">Quick Apply</button>
+        </div>
+        <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">₹12L–₹20L · Posted 1 day ago</div>
+      </div>
+      <div class="job-card">
+        <div class="jc-top">
+          <div class="jc-left">
+            <div class="co-logo" style="background:rgba(5,150,105,.15);color:#34D399">F</div>
+            <div class="jc-info"><h3>AI Content Strategist</h3><p>Freshworks · Chennai · Remote</p></div>
+          </div>
+          <div class="jc-badges"><span class="jbadge jb-green">88% Match</span></div>
+        </div>
+        <div class="jc-bottom">
+          <div class="jc-tags">
+            <span class="skill-tag">ChatGPT</span><span class="skill-tag">Content</span><span class="skill-tag">SEO</span>
+          </div>
+          <button class="apply-btn">Quick Apply</button>
+        </div>
+        <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">₹8L–₹14L · Posted 2 days ago</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page fade-in" id="page-dashboard">
+  <div class="dash-page">
+    <div class="dash-welcome">
+      <h1>Welcome back, Rahul 👋</h1>
+      <p>You have 3 new job matches and 1 course to complete today.</p>
+    </div>
+    <div class="dash-kpi">
+      <div class="kpi-card"><div class="kpi-icon">📚</div><div class="kpi-val">4</div><div class="kpi-label">Courses Enrolled</div></div>
+      <div class="kpi-card"><div class="kpi-icon">✅</div><div class="kpi-val">12</div><div class="kpi-label">Applications Sent</div></div>
+      <div class="kpi-card"><div class="kpi-icon">🎯</div><div class="kpi-val">3</div><div class="kpi-label">Interviews Scheduled</div></div>
+      <div class="kpi-card"><div class="kpi-icon">⭐</div><div class="kpi-val">87%</div><div class="kpi-label">Profile Score</div></div>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-widget">
+        <h3>📚 Course Progress</h3>
+        <div class="progress-item">
+          <div class="progress-label"><span>ChatGPT Mastery</span><span>78%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label"><span>AI Automation</span><span>45%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label"><span>Data Analysis</span><span>20%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label"><span>AI Marketing</span><span>100%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,var(--green),#34D399)"></div></div>
+        </div>
+      </div>
+      <div class="dash-widget">
+        <h3>💼 Recent Applications</h3>
+        <div class="recent-list">
+          <div class="recent-item">
+            <div class="ri-dot" style="background:#F59E0B"></div>
+            <div class="ri-info"><h4>AI Product Manager · Google</h4><p>Applied 2 days ago</p></div>
+            <span class="ri-status" style="background:rgba(245,158,11,.1);color:var(--orange)">In Review</span>
+          </div>
+          <div class="recent-item">
+            <div class="ri-dot" style="background:#059669"></div>
+            <div class="ri-info"><h4>Automation Engineer · Razorpay</h4><p>Applied 4 days ago</p></div>
+            <span class="ri-status" style="background:rgba(5,150,105,.1);color:var(--green)">Interview 🎉</span>
+          </div>
+          <div class="recent-item">
+            <div class="ri-dot" style="background:#5B5EF4"></div>
+            <div class="ri-info"><h4>Data Analyst · Swiggy</h4><p>Applied 6 days ago</p></div>
+            <span class="ri-status" style="background:rgba(91,94,244,.1);color:var(--accent)">Shortlisted</span>
+          </div>
+          <div class="recent-item">
+            <div class="ri-dot" style="background:#94A3B8"></div>
+            <div class="ri-info"><h4>AI Content Lead · Freshworks</h4><p>Applied 1 week ago</p></div>
+            <span class="ri-status" style="background:rgba(148,163,184,.1);color:var(--muted)">Pending</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else {
+    const tabs = ['home','courses','jobs','dashboard'];
+    const i = tabs.indexOf(id);
+    if(i >= 0) document.querySelectorAll('.tab-btn')[i].classList.add('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function(){
+    this.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
