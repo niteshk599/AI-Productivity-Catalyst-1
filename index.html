@@ -414,8 +414,20 @@ main{position:relative;z-index:1}
 
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <script>
-<script>
+// -----------------------------
+// SUPABASE CONFIG
+// -----------------------------
+const SUPABASE_URL = "https://qosncefbfvlazlokzyml.supabase.co"
+const SUPABASE_KEY = "YOUR_PUBLIC_ANON_KEY"
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+// -----------------------------
+// PAGE SWITCHING
+// -----------------------------
 function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
   document.getElementById('page-' + id).classList.add('active')
@@ -423,42 +435,38 @@ function showPage(id, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
   if (btn) btn.classList.add('active')
 
-  // 🔥 Load courses dynamically
   if (id === "courses") {
     loadCourses()
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
-</script>
-}
+
+// -----------------------------
+// FILTER BUTTON ACTIVE STATE
+// -----------------------------
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', function(){
-    this.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-</script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    this.closest('.filter-bar')
+      .querySelectorAll('.filter-btn')
+      .forEach(b => b.classList.remove('active'))
 
-<script>
-const SUPABASE_URL = "https://qosncefbfvlazlokzyml.supabase.co"
-const SUPABASE_KEY = "sb_publishable_ZXdPWausb5BQEME_ZSpBZw_3gHqAVqv"
+    this.classList.add('active')
+  })
+})
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
-<script>
+// -----------------------------
+// LOAD COURSES (DYNAMIC)
+// -----------------------------
 async function loadCourses() {
+
   const { data, error } = await supabaseClient
     .from("courses")
     .select("*")
     .order("created_at", { ascending: false })
 
   console.log("Courses:", data)
-
-  if (error) {
-    console.error(error)
-    return
-  }
+  console.log("Error:", error)
 
   const container = document.getElementById("coursesContainer")
   if (!container) return
@@ -475,52 +483,9 @@ async function loadCourses() {
       <div class="course-card">
         <div class="course-thumb" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF)">🚀</div>
         <div class="course-body">
-          <div class="course-cat">${course.category}</div>
+          <div class="course-cat">${course.category || "AI"}</div>
           <h3>${course.title}</h3>
-          <p>${course.description}</p>
-          <div class="course-meta">
-            <div class="course-price">₹${course.price}</div>
-          </div>
-          <button class="enroll-btn">Enroll Now</button>
-        </div>
-      </div>
-    `
-  })
-}
-</script>
-// TEST CONNECTION
-async function testConnection() {
-  const { data, error } = await supabaseClient.from("courses").select("*")
-  console.log("Courses:", data)
-  console.log("Error:", error)
-}
-
-<script>
-async function loadCourses() {
-  const { data, error } = await supabaseClient
-    .from("courses")
-    .select("*")
-
-  console.log("Courses:", data)
-
-  if (!data) return
-
-  const container = document.getElementById("coursesContainer")
-  if (!container) {
-    console.error("Container not found")
-    return
-  }
-
-  container.innerHTML = ""
-
-  data.forEach(course => {
-    container.innerHTML += `
-      <div class="course-card">
-        <div class="course-thumb" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF)">🚀</div>
-        <div class="course-body">
-          <div class="course-cat">${course.category}</div>
-          <h3>${course.title}</h3>
-          <p>${course.description}</p>
+          <p>${course.description || ""}</p>
           <div class="course-meta">
             <div class="course-price">₹${course.price}</div>
           </div>
@@ -531,9 +496,12 @@ async function loadCourses() {
   })
 }
 
-// Load when page opens
-document.addEventListener("DOMContentLoaded", loadCourses)
-</script>
+// -----------------------------
+// LOAD ON PAGE OPEN
+// -----------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  loadCourses()
+})
 </script>
 </body>
 </html>
