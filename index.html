@@ -4,15 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SkillLaunch — AI Courses & Jobs</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#F6F8FF;--surface:#fff;--surface2:#F0F3FF;
-  --accent:#5B5EF4;--accent2:#9333EA;--accent3:#06B6D4;
-  --green:#059669;--orange:#F59E0B;--red:#EF4444;
-  --text:#0F172A;--muted:#64748B;--border:rgba(91,94,244,.13);
-}
+:root{--bg:#F6F8FF;--surface:#fff;--surface2:#F0F3FF;--accent:#5B5EF4;--accent2:#9333EA;--accent3:#06B6D4;--green:#059669;--orange:#F59E0B;--red:#EF4444;--text:#0F172A;--muted:#64748B;--border:rgba(91,94,244,.13)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
@@ -20,30 +14,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overf
 .blob{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0}
 .blob1{width:500px;height:500px;background:rgba(91,94,244,.09);top:-150px;right:-100px}
 .blob2{width:400px;height:400px;background:rgba(147,51,234,.07);bottom:0;left:-100px}
-
-/* ── CONFIG BANNER ── */
-#config-banner{position:fixed;top:0;left:0;right:0;z-index:999;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;text-align:center;padding:10px 20px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:12px}
-#config-banner.hidden{display:none}
-.config-link{color:#fff;text-decoration:underline;cursor:pointer;font-weight:700}
-
-/* ── SETUP MODAL ── */
-#setup-modal{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}
-#setup-modal.hidden{display:none}
-.modal-box{background:var(--surface);border-radius:20px;padding:40px;max-width:520px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.2)}
-.modal-box h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;margin-bottom:8px}
-.modal-box p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:24px}
-.input-group{margin-bottom:16px}
-.input-group label{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px}
-.input-group input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s}
-.input-group input:focus{border-color:var(--accent);background:#fff}
-.modal-steps{background:var(--surface2);border-radius:12px;padding:16px;margin-bottom:24px;font-size:13px;line-height:1.8;color:var(--muted)}
-.modal-steps strong{color:var(--text)}
-.modal-steps code{background:rgba(91,94,244,.1);color:var(--accent);padding:1px 6px;border-radius:4px;font-size:12px}
-.btn-save{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-save:hover{opacity:.9;transform:translateY(-1px)}
-.skip-link{display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline}
-
-/* ── NAV ── */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(246,248,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
 .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;letter-spacing:-.5px;text-decoration:none;color:var(--text)}
 .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
@@ -58,37 +28,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;padding:0 40px;d
 .btn-ghost:hover{border-color:var(--accent);color:var(--text)}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;padding:9px 20px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;box-shadow:0 0 20px rgba(91,94,244,.3);transition:all .2s}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(91,94,244,.5)}
-
-/* ── AUTH MODAL ── */
-#auth-modal{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px}
-#auth-modal.hidden{display:none}
-.auth-box{background:var(--surface);border-radius:20px;padding:40px;max-width:420px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.2)}
-.auth-box h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:6px;text-align:center}
-.auth-box p{color:var(--muted);font-size:13.5px;text-align:center;margin-bottom:28px}
-.auth-tabs{display:flex;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:24px}
-.auth-tab{flex:1;padding:8px;text-align:center;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;font-family:inherit;color:var(--muted);transition:all .2s}
-.auth-tab.active{background:#fff;color:var(--accent);box-shadow:0 1px 6px rgba(0,0,0,.08)}
-.auth-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
-.auth-success{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);color:var(--green);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
-.auth-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:none;background:var(--surface2);border-radius:8px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.relative{position:relative}
-
-/* ── TOAST ── */
-#toast{position:fixed;bottom:30px;right:30px;z-index:999;background:var(--text);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.2);transform:translateY(100px);opacity:0;transition:all .3s;max-width:320px}
-#toast.show{transform:translateY(0);opacity:1}
-#toast.success{background:var(--green)}
-#toast.error{background:var(--red)}
-
-/* ── LOADING ── */
-.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,#e8ecff 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-@keyframes spin{to{transform:rotate(360deg)}}
-
 main{position:relative;z-index:1}
 .page{display:none;padding-top:64px}
-
-/* ── HERO ── */
+.page.active{display:block}
 .hero{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 40px 60px}
 .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(91,94,244,.1);border:1px solid rgba(91,94,244,.25);padding:6px 16px;border-radius:100px;font-size:12px;font-weight:700;color:var(--accent);margin-bottom:28px;letter-spacing:.3px}
 .hero h1{font-family:'Playfair Display',serif;font-size:clamp(38px,6vw,68px);font-weight:800;line-height:1.1;letter-spacing:-1px;margin-bottom:20px}
@@ -110,8 +52,6 @@ main{position:relative;z-index:1}
 .home-card h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;margin-bottom:12px}
 .home-card p{color:var(--muted);font-size:14.5px;line-height:1.75;margin-bottom:24px}
 .card-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(91,94,244,.1);color:var(--accent);font-size:12px;font-weight:700;padding:4px 12px;border-radius:100px}
-
-/* ── COURSES ── */
 .page-hero{padding:80px 40px 32px;max-width:1200px;margin:0 auto}
 .page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
 .page-hero p{color:var(--muted);font-size:15.5px;max-width:520px;line-height:1.7}
@@ -134,8 +74,6 @@ main{position:relative;z-index:1}
 .enroll-btn{width:100%;margin-top:14px;padding:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
 .enroll-btn:hover{opacity:.9}
 .enrolled-tag{width:100%;margin-top:14px;padding:10px;background:rgba(5,150,105,.1);color:var(--green);border:1px solid rgba(5,150,105,.2);border-radius:8px;font-size:13px;font-weight:700;text-align:center}
-
-/* ── JOBS ── */
 .jobs-layout{max-width:1200px;margin:0 auto;padding:20px 40px 80px;display:grid;grid-template-columns:260px 1fr;gap:20px}
 .jobs-sidebar{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;height:fit-content;position:sticky;top:84px}
 .jobs-sidebar h3{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:12px;margin-top:20px}
@@ -166,8 +104,6 @@ main{position:relative;z-index:1}
 .apply-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:8px 18px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
 .apply-btn:hover{opacity:.9}
 .applied-tag{background:rgba(5,150,105,.1);color:var(--green);border:1px solid rgba(5,150,105,.2);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700}
-
-/* ── DASHBOARD ── */
 .dash-page{max-width:1200px;margin:0 auto;padding:30px 40px 80px}
 .dash-welcome{margin-bottom:28px}
 .dash-welcome h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;margin-bottom:6px}
@@ -194,28 +130,46 @@ main{position:relative;z-index:1}
 .empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
 .empty-state .ei{font-size:40px;margin-bottom:12px}
 .empty-state p{font-size:14px;line-height:1.7}
-
-/* ── SQL PANEL ── */
-#sql-panel{position:fixed;bottom:20px;left:20px;z-index:300;background:var(--text);color:#E2E8F0;border-radius:14px;padding:16px 20px;max-width:340px;font-size:12px;line-height:1.7;box-shadow:0 8px 32px rgba(0,0,0,.3);display:none}
-#sql-panel.show{display:block}
-#sql-panel h4{color:#818CF8;font-weight:700;margin-bottom:8px;font-size:11px;text-transform:uppercase;letter-spacing:1px}
-#sql-panel code{color:#7DD3FC;font-family:monospace}
-#sql-panel .close-sql{float:right;cursor:pointer;color:var(--muted);margin-top:-2px}
-
+#auth-modal{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px}
+#auth-modal.hidden{display:none}
+.auth-box{background:var(--surface);border-radius:20px;padding:40px;max-width:420px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.2)}
+.auth-box h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:6px;text-align:center}
+.auth-box p{color:var(--muted);font-size:13.5px;text-align:center;margin-bottom:28px}
+.auth-tabs{display:flex;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:24px}
+.auth-tab{flex:1;padding:8px;text-align:center;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;font-family:inherit;color:var(--muted);transition:all .2s}
+.auth-tab.active{background:#fff;color:var(--accent);box-shadow:0 1px 6px rgba(0,0,0,.08)}
+.auth-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
+.auth-success{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);color:var(--green);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
+.input-group{margin-bottom:14px}
+.input-group label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px}
+.input-group input,.input-group textarea,.input-group select{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s}
+.input-group input:focus,.input-group textarea:focus,.input-group select:focus{border-color:var(--accent);background:#fff}
+.btn-save{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-save:hover{opacity:.9;transform:translateY(-1px)}
+#toast{position:fixed;bottom:30px;right:30px;z-index:999;background:var(--text);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.2);transform:translateY(100px);opacity:0;transition:all .3s;max-width:320px}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.success{background:var(--green)}
+#toast.error{background:var(--red)}
+.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,#e8ecff 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+#admin-login-modal{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}
+#admin-login-modal.hidden{display:none}
+#forgot-modal{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}
+#forgot-modal.hidden{display:none}
+#edit-modal{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
 .fp-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s}
 .active-dot{background:var(--accent);width:24px;border-radius:100px}
 .req-item{font-size:12px;color:var(--muted);padding:3px 0;transition:color .2s;font-weight:500}
-.req-ok{color:var(--green) !important}
-.req-ok::first-letter{content:'✅'}
-
+.req-ok{color:var(--green)!important}
+.otp-box{width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeUp .4s ease both}
-
 @media(max-width:900px){
   .home-grid,.courses-grid,.dash-grid,.dash-kpi{grid-template-columns:1fr}
   .jobs-layout{grid-template-columns:1fr}
   .jobs-sidebar{display:none}
-  nav,.hero,.page-hero{padding-left:20px;padding-right:20px}
   nav{padding-left:16px;padding-right:16px}
 }
 </style>
@@ -225,39 +179,12 @@ main{position:relative;z-index:1}
 <div class="blob blob1"></div>
 <div class="blob blob2"></div>
 
-<!-- CONFIG BANNER -->
-
-
-<!-- SETUP MODAL -->
-<div id="setup-modal" class="hidden" style="position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px">
-    <h2>🔌 Connect Supabase</h2>
-    <p>Enter your Supabase credentials to connect the live backend. Your data stays in your own Supabase project.</p>
-    <div class="modal-steps">
-      <strong>How to get your keys:</strong><br>
-      1. Go to <code>supabase.com</code> → Your Project<br>
-      2. Settings → API → copy <code>Project URL</code><br>
-      3. Copy <code>anon / public</code> key<br>
-      4. Run the SQL schema below in SQL Editor
-    </div>
-    <div class="input-group">
-      <label>Supabase Project URL</label>
-      <input id="sb-url" type="text" placeholder="https://xxxxxxxxxxxx.supabase.co">
-    </div>
-    <div class="input-group">
-      <label>Supabase Anon Key</label>
-      <input id="sb-key" type="text" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-    </div>
-    <button class="btn-save" onclick="saveConfig()">Save & Connect →</button>
-    <span class="skip-link" onclick="closeSetup()">Skip for now (use demo data)</span>
-  </div>
-</div>
-
 <!-- AUTH MODAL -->
 <div id="auth-modal" class="hidden">
-  <div class="auth-box relative">
-    <button class="auth-close" onclick="closeAuth()">✕</button>
+  <div class="auth-box" style="position:relative">
+    <button onclick="closeAuth()" style="position:absolute;top:14px;right:14px;border:none;background:var(--surface2);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px">✕</button>
     <h2>Welcome to SkillLaunch 🚀</h2>
-    <p>Sign in or create your account to get started</p>
+    <p>Sign in or create your account</p>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuth('login',this)">Sign In</button>
       <button class="auth-tab" onclick="switchAuth('register',this)">Register</button>
@@ -278,148 +205,31 @@ main{position:relative;z-index:1}
   </div>
 </div>
 
-<!-- FORGOT PASSWORD MODAL -->
-<div id="forgot-modal" class="hidden" style="position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px">
-  <div style="background:var(--surface);border-radius:20px;padding:40px;max-width:440px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.25);position:relative">
-
-    <!-- STEP 1: Enter Email -->
-    <div id="fp-step1">
-      <div style="text-align:center;margin-bottom:24px">
-        <div style="width:56px;height:56px;background:linear-gradient(135deg,#F59E0B,#EF4444);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px">🔑</div>
-        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px">Forgot Password?</h2>
-        <p style="color:var(--muted);font-size:13.5px;line-height:1.6">Enter your admin email and we'll send you a reset link or OTP to regain access.</p>
-      </div>
-      <div id="fp-error1" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none"></div>
-      <div style="margin-bottom:18px">
-        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Admin Email</label>
-        <input id="fp-email" type="email" placeholder="admin@yourdomain.com" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')sendResetOTP()">
-      </div>
-      <!-- Method toggle -->
-      <div style="margin-bottom:20px">
-        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Reset Method</label>
-        <div style="display:flex;gap:8px">
-          <button id="method-email" onclick="selectMethod('email',this)" style="flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--accent);background:rgba(91,94,244,.08);color:var(--accent);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s">📧 Email Link</button>
-          <button id="method-otp" onclick="selectMethod('otp',this)" style="flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s">🔢 OTP Code</button>
-        </div>
-        <p id="method-desc" style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6">A secure reset link will be sent to your email. Click it to set a new password.</p>
-      </div>
-      <button onclick="sendResetOTP()" style="width:100%;padding:13px;background:linear-gradient(135deg,#F59E0B,#EF4444);border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(245,158,11,.3);transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
-        <span id="fp-send-btn">Send Reset →</span>
-      </button>
-      <button onclick="closeForgotPassword()" style="display:block;width:100%;margin-top:10px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px">← Back to Login</button>
-    </div>
-
-    <!-- STEP 2: Enter OTP -->
-    <div id="fp-step2" style="display:none">
-      <div style="text-align:center;margin-bottom:24px">
-        <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px">🔢</div>
-        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px">Enter OTP</h2>
-        <p id="fp-otp-desc" style="color:var(--muted);font-size:13.5px;line-height:1.6">A 6-digit code was sent to <strong id="fp-sent-to"></strong>. It expires in <span id="otp-timer" style="color:var(--accent);font-weight:700">05:00</span></p>
-      </div>
-      <div id="fp-error2" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none"></div>
-      <!-- OTP boxes -->
-      <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px">
-        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,0)" onkeydown="otpKey(event,0)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
-        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,1)" onkeydown="otpKey(event,1)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
-        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,2)" onkeydown="otpKey(event,2)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
-        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,3)" onkeydown="otpKey(event,3)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
-        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,4)" onkeydown="otpKey(event,4)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
-        <input class="otp-box" maxlength="1" style="width:48px;height:56px;border:1.5px solid var(--border);border-radius:10px;text-align:center;font-family:inherit;font-size:22px;font-weight:800;color:var(--text);background:var(--surface2);outline:none;transition:all .2s" oninput="otpInput(this,5)" onkeydown="otpKey(event,5)" onfocus="this.style.borderColor='var(--accent)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
-      </div>
-      <button onclick="verifyOTP()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(91,94,244,.3);margin-bottom:10px">
-        <span id="fp-verify-btn">Verify OTP →</span>
-      </button>
-      <div style="text-align:center">
-        <span id="resend-area" style="font-size:13px;color:var(--muted)">Didn't get it? <span id="resend-btn" onclick="resendOTP()" style="color:var(--accent);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Resend Code</span></span>
-      </div>
-      <button onclick="fpGoBack(1)" style="display:block;width:100%;margin-top:12px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px">← Change Email</button>
-    </div>
-
-    <!-- STEP 3: New Password -->
-    <div id="fp-step3" style="display:none">
-      <div style="text-align:center;margin-bottom:24px">
-        <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--green),#34D399);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px">🛡️</div>
-        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px">Set New Password</h2>
-        <p style="color:var(--muted);font-size:13.5px;line-height:1.6">Choose a strong new password for your admin account.</p>
-      </div>
-      <div id="fp-error3" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none"></div>
-      <div style="margin-bottom:14px">
-        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">New Password</label>
-        <div style="position:relative">
-          <input id="fp-new-pass" type="password" placeholder="Min 8 characters" oninput="checkPasswordStrength(this.value)" style="width:100%;padding:12px 46px 12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')document.getElementById('fp-confirm-pass').focus()">
-          <button onclick="togglePwd('fp-new-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;font-size:16px;color:var(--muted)">👁</button>
-        </div>
-        <!-- Strength bar -->
-        <div style="margin-top:8px">
-          <div style="height:4px;background:var(--surface2);border-radius:100px;overflow:hidden">
-            <div id="strength-bar" style="height:100%;width:0%;border-radius:100px;transition:all .3s"></div>
-          </div>
-          <p id="strength-label" style="font-size:11px;color:var(--muted);margin-top:4px;font-weight:600"></p>
-        </div>
-      </div>
-      <div style="margin-bottom:20px">
-        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Confirm Password</label>
-        <div style="position:relative">
-          <input id="fp-confirm-pass" type="password" placeholder="Repeat password" style="width:100%;padding:12px 46px 12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')saveNewPassword()">
-          <button onclick="togglePwd('fp-confirm-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;font-size:16px;color:var(--muted)">👁</button>
-        </div>
-      </div>
-      <!-- Requirements checklist -->
-      <div style="background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:18px">
-        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Password Requirements</p>
-        <div id="req-length"  class="req-item">⬜ At least 8 characters</div>
-        <div id="req-upper"   class="req-item">⬜ One uppercase letter</div>
-        <div id="req-number"  class="req-item">⬜ One number</div>
-        <div id="req-special" class="req-item">⬜ One special character (!@#$...)</div>
-      </div>
-      <button onclick="saveNewPassword()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--green),#059669);border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(5,150,105,.3)">
-        <span id="fp-save-btn">Save New Password →</span>
-      </button>
-    </div>
-
-    <!-- STEP 4: Success -->
-    <div id="fp-step4" style="display:none;text-align:center;padding:10px 0">
-      <div style="width:72px;height:72px;background:linear-gradient(135deg,var(--green),#34D399);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px;box-shadow:0 8px 32px rgba(5,150,105,.3)">✅</div>
-      <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:10px">Password Updated!</h2>
-      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:28px">Your admin password has been changed successfully. You can now log in with your new password.</p>
-      <button onclick="fpGoToLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(91,94,244,.3)">Go to Login →</button>
-    </div>
-
-    <!-- Step indicator -->
-    <div id="fp-steps-indicator" style="display:flex;justify-content:center;gap:8px;margin-top:24px">
-      <div class="fp-dot active-dot" id="dot-1"></div>
-      <div class="fp-dot" id="dot-2"></div>
-      <div class="fp-dot" id="dot-3"></div>
-      <div class="fp-dot" id="dot-4"></div>
-    </div>
-  </div>
-</div>
-
 <!-- ADMIN LOGIN MODAL -->
-<div id="admin-login-modal" class="hidden" style="position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px">
+<div id="admin-login-modal" class="hidden">
   <div style="background:var(--surface);border-radius:20px;padding:40px;max-width:420px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.25);position:relative">
     <div style="text-align:center;margin-bottom:24px">
       <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 14px">🔐</div>
       <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:6px">Admin Access</h2>
-      <p style="color:var(--muted);font-size:13.5px">This area is protected. Enter admin credentials to continue.</p>
+      <p style="color:var(--muted);font-size:13.5px">Enter admin credentials to continue.</p>
     </div>
     <div id="admin-login-error" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none"></div>
     <div style="margin-bottom:14px">
       <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Admin Email</label>
-      <input id="admin-email" type="email" placeholder="admin@yourdomain.com" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')doAdminLogin()">
+      <input id="admin-email" type="email" placeholder="admin@yourdomain.com" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none" onkeydown="if(event.key==='Enter')doAdminLogin()">
     </div>
     <div style="margin-bottom:20px">
       <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Password</label>
       <div style="position:relative">
-        <input id="admin-password" type="password" placeholder="••••••••" style="width:100%;padding:12px 46px 12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter')doAdminLogin()">
+        <input id="admin-password" type="password" placeholder="••••••••" style="width:100%;padding:12px 46px 12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none" onkeydown="if(event.key==='Enter')doAdminLogin()">
         <button onclick="togglePwd('admin-password',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;font-size:16px;color:var(--muted)">👁</button>
       </div>
     </div>
-    <button onclick="doAdminLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(91,94,244,.3);transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
+    <button onclick="doAdminLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(91,94,244,.3)">
       <span id="admin-login-btn-text">Unlock Admin Panel →</span>
     </button>
     <div style="text-align:center;margin-top:14px">
-      <span onclick="openForgotPassword()" style="font-size:13px;color:var(--accent);cursor:pointer;font-weight:600;text-decoration:underline;text-underline-offset:3px">Forgot password?</span>
+      <span onclick="openForgotPassword()" style="font-size:13px;color:var(--accent);cursor:pointer;font-weight:600;text-decoration:underline">Forgot password?</span>
     </div>
     <button onclick="closeAdminLogin()" style="display:block;width:100%;margin-top:10px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px">Cancel</button>
     <div style="margin-top:16px;background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7">
@@ -430,30 +240,111 @@ main{position:relative;z-index:1}
   </div>
 </div>
 
+<!-- FORGOT PASSWORD MODAL -->
+<div id="forgot-modal" class="hidden">
+  <div style="background:var(--surface);border-radius:20px;padding:40px;max-width:440px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.25);position:relative">
+    <div id="fp-step1">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,#F59E0B,#EF4444);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px">🔑</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px">Forgot Password?</h2>
+        <p style="color:var(--muted);font-size:13.5px;line-height:1.6">Enter your admin email to receive a reset OTP.</p>
+      </div>
+      <div id="fp-error1" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none"></div>
+      <div style="margin-bottom:18px">
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Admin Email</label>
+        <input id="fp-email" type="email" placeholder="admin@yourdomain.com" style="width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none" onkeydown="if(event.key==='Enter')sendResetOTP()">
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Reset Method</label>
+        <div style="display:flex;gap:8px">
+          <button id="method-email" onclick="selectMethod('email',this)" style="flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--accent);background:rgba(91,94,244,.08);color:var(--accent);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">📧 Email Link</button>
+          <button id="method-otp" onclick="selectMethod('otp',this)" style="flex:1;padding:10px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">🔢 OTP Code</button>
+        </div>
+        <p id="method-desc" style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6">A secure reset link will be sent to your email.</p>
+      </div>
+      <button onclick="sendResetOTP()" style="width:100%;padding:13px;background:linear-gradient(135deg,#F59E0B,#EF4444);border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer"><span id="fp-send-btn">Send Reset →</span></button>
+      <button onclick="closeForgotPassword()" style="display:block;width:100%;margin-top:10px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px">← Back to Login</button>
+    </div>
+    <div id="fp-step2" style="display:none">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px">🔢</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px">Enter OTP</h2>
+        <p style="color:var(--muted);font-size:13px;line-height:1.6">Sent to <strong id="fp-sent-to"></strong> · Expires in <span id="otp-timer" style="color:var(--accent);font-weight:700">05:00</span></p>
+      </div>
+      <div id="fp-error2" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none"></div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this,0)" onkeydown="otpKey(event,0)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this,1)" onkeydown="otpKey(event,1)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this,2)" onkeydown="otpKey(event,2)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this,3)" onkeydown="otpKey(event,3)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this,4)" onkeydown="otpKey(event,4)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        <input class="otp-box" maxlength="1" oninput="otpInput(this,5)" onkeydown="otpKey(event,5)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+      <button onclick="verifyOTP()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px"><span id="fp-verify-btn">Verify OTP →</span></button>
+      <div style="text-align:center;font-size:13px;color:var(--muted)">Didn't get it? <span onclick="resendOTP()" style="color:var(--accent);font-weight:700;cursor:pointer;text-decoration:underline">Resend Code</span></div>
+      <button onclick="fpGoToStep(1)" style="display:block;width:100%;margin-top:12px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:6px">← Change Email</button>
+    </div>
+    <div id="fp-step3" style="display:none">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--green),#34D399);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px">🛡️</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px">Set New Password</h2>
+        <p style="color:var(--muted);font-size:13.5px">Choose a strong new admin password.</p>
+      </div>
+      <div id="fp-error3" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none"></div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">New Password</label>
+        <div style="position:relative">
+          <input id="fp-new-pass" type="password" placeholder="Min 8 characters" oninput="checkPasswordStrength(this.value)" style="width:100%;padding:12px 46px 12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none">
+          <button onclick="togglePwd('fp-new-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;font-size:16px;color:var(--muted)">👁</button>
+        </div>
+        <div style="margin-top:8px"><div style="height:4px;background:var(--surface2);border-radius:100px;overflow:hidden"><div id="strength-bar" style="height:100%;width:0%;border-radius:100px;transition:all .3s"></div></div><p id="strength-label" style="font-size:11px;color:var(--muted);margin-top:4px;font-weight:600"></p></div>
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Confirm Password</label>
+        <div style="position:relative">
+          <input id="fp-confirm-pass" type="password" placeholder="Repeat password" style="width:100%;padding:12px 46px 12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:var(--surface2);outline:none" onkeydown="if(event.key==='Enter')saveNewPassword()">
+          <button onclick="togglePwd('fp-confirm-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;font-size:16px;color:var(--muted)">👁</button>
+        </div>
+      </div>
+      <div style="background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:18px">
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px">Requirements</p>
+        <div id="req-length" class="req-item">⬜ At least 8 characters</div>
+        <div id="req-upper"  class="req-item">⬜ One uppercase letter</div>
+        <div id="req-number" class="req-item">⬜ One number</div>
+        <div id="req-special" class="req-item">⬜ One special character</div>
+      </div>
+      <button onclick="saveNewPassword()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--green),#059669);border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer"><span id="fp-save-btn">Save New Password →</span></button>
+    </div>
+    <div id="fp-step4" style="display:none;text-align:center;padding:10px 0">
+      <div style="width:72px;height:72px;background:linear-gradient(135deg,var(--green),#34D399);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px">✅</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:10px">Password Updated!</h2>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:28px">You can now log in with your new password.</p>
+      <button onclick="fpGoToLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer">Go to Login →</button>
+    </div>
+    <div id="fp-steps-indicator" style="display:flex;justify-content:center;gap:8px;margin-top:24px">
+      <div class="fp-dot active-dot" id="dot-1"></div>
+      <div class="fp-dot" id="dot-2"></div>
+      <div class="fp-dot" id="dot-3"></div>
+      <div class="fp-dot" id="dot-4"></div>
+    </div>
+  </div>
+</div>
+
 <!-- EDIT MODAL -->
-<div id="edit-modal" class="hidden" style="position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px">
-  <div style="background:var(--surface);border-radius:20px;padding:36px;max-width:500px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.2);position:relative">
+<div id="edit-modal" style="position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--surface);border-radius:20px;padding:36px;max-width:500px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.2);position:relative;max-height:90vh;overflow-y:auto">
     <button onclick="closeEditModal()" style="position:absolute;top:14px;right:14px;border:none;background:var(--surface2);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px">✕</button>
-    <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px" id="edit-modal-title">Edit Course</h2>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:22px">Changes save to Supabase instantly (or update demo data locally)</p>
+    <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:6px" id="edit-modal-title">Edit</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:22px">Changes save instantly</p>
     <input type="hidden" id="edit-id">
     <input type="hidden" id="edit-type">
     <div id="edit-fields"></div>
-    <button onclick="saveEdit()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px">
-      <span id="save-btn-text">💾 Save Changes</span>
-    </button>
+    <button onclick="saveEdit()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px"><span id="save-btn-text">💾 Save Changes</span></button>
   </div>
 </div>
 
 <!-- TOAST -->
 <div id="toast"></div>
-
-<!-- SQL HINT PANEL -->
-<div id="sql-panel">
-  <span class="close-sql" onclick="document.getElementById('sql-panel').classList.remove('show')">✕</span>
-  <h4>📋 SQL Executed</h4>
-  <div id="sql-content"></div>
-</div>
 
 <!-- NAV -->
 <nav id="main-nav">
@@ -465,7 +356,7 @@ main{position:relative;z-index:1}
     <button class="tab-btn" onclick="showPage('courses',this)">Courses</button>
     <button class="tab-btn" onclick="showPage('jobs',this)">Jobs</button>
     <button class="tab-btn" onclick="showPage('dashboard',this)">Dashboard</button>
-    <button class="tab-btn" id="admin-tab-btn" onclick="handleAdminClick(this)" style="display:none">⚙️ Admin</button>
+    <button class="tab-btn" id="admin-tab-btn" onclick="showPage('admin',this)" style="display:none">⚙️ Admin ●</button>
   </div>
   <div class="nav-right" id="nav-auth">
     <button class="btn-ghost" onclick="openAuth('login')">Sign In</button>
@@ -479,7 +370,7 @@ main{position:relative;z-index:1}
   <section class="hero">
     <div class="badge">✦ AI-Powered Learning + Career Platform</div>
     <h1>Learn. Grow.<br><span class="grad">Get Hired.</span></h1>
-    <p>Master AI productivity with expert courses, then land your dream job — backed by real-time Supabase data.</p>
+    <p>Master AI productivity with expert courses, then land your dream job — all in one platform.</p>
     <div class="hero-btns">
       <button class="btn-primary btn-lg" onclick="showPage('courses',document.querySelectorAll('.tab-btn')[1])">Explore Courses →</button>
       <button class="btn-outline" onclick="showPage('jobs',document.querySelectorAll('.tab-btn')[2])">Browse Jobs</button>
@@ -495,13 +386,13 @@ main{position:relative;z-index:1}
     <div class="home-card" onclick="showPage('courses',document.querySelectorAll('.tab-btn')[1])">
       <div class="card-icon">🎓</div>
       <h2>AI Productivity Courses</h2>
-      <p>Learn ChatGPT, Prompt Engineering, AI Tools for Business, No-Code Automation & more. Curated for working professionals.</p>
+      <p>Learn ChatGPT, Prompt Engineering, AI Tools for Business, No-Code Automation & more.</p>
       <div class="card-tag">200+ Courses · Start Free ✦</div>
     </div>
     <div class="home-card" onclick="showPage('jobs',document.querySelectorAll('.tab-btn')[2])">
       <div class="card-icon">💼</div>
       <h2>AI-Matched Job Portal</h2>
-      <p>Get matched to top roles at Google, Infosys, Razorpay & 500+ companies. AI scores your profile against every job listing.</p>
+      <p>Get matched to top roles at Google, Infosys, Razorpay & 500+ companies with AI scoring.</p>
       <div class="card-tag">5L+ Jobs · AI Matching ✦</div>
     </div>
   </div>
@@ -510,10 +401,10 @@ main{position:relative;z-index:1}
 <!-- COURSES -->
 <div class="page fade-in" id="page-courses">
   <div class="page-hero">
-    <div class="badge">🎓 Live from Supabase DB</div>
+    <div class="badge">🎓 Live Courses</div>
     <h1>Master AI Skills That<br><span class="grad">Get You Hired</span></h1>
-    <p>Real courses fetched from your Supabase database in real time.</p>
-    <div class="filter-bar" id="cat-filters">
+    <p>Expert-led courses fetched live from your database.</p>
+    <div class="filter-bar">
       <button class="filter-btn active" onclick="filterCourses('all',this)">All</button>
       <button class="filter-btn" onclick="filterCourses('AI & ChatGPT',this)">AI & ChatGPT</button>
       <button class="filter-btn" onclick="filterCourses('Automation',this)">Automation</button>
@@ -523,7 +414,7 @@ main{position:relative;z-index:1}
     </div>
   </div>
   <div class="courses-grid" id="courses-grid">
-    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">
+    <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)">
       <div class="spinner" style="border-color:rgba(91,94,244,.3);border-top-color:var(--accent);width:32px;height:32px;margin:0 auto 12px"></div>
       Loading courses...
     </div>
@@ -533,9 +424,9 @@ main{position:relative;z-index:1}
 <!-- JOBS -->
 <div class="page fade-in" id="page-jobs">
   <div class="page-hero">
-    <div class="badge">💼 Live Jobs from Supabase</div>
+    <div class="badge">💼 Live Jobs</div>
     <h1>Find Jobs That Match<br><span class="grad">Your Skills</span></h1>
-    <p>Job listings fetched live from your Supabase database — apply with one click.</p>
+    <p>AI-matched job listings updated daily from top companies.</p>
   </div>
   <div class="jobs-layout">
     <aside class="jobs-sidebar">
@@ -558,14 +449,14 @@ main{position:relative;z-index:1}
     <div>
       <div class="jobs-search">
         <span>🔍</span>
-        <input type="text" id="job-search-input" placeholder="Search by title, skill, company..." oninput="applyJobFilters()">
+        <input type="text" id="job-search-input" placeholder="Search title, skill, company..." oninput="applyJobFilters()">
         <button class="btn-primary" style="padding:8px 18px;font-size:13px">Search</button>
       </div>
       <div class="jobs-count" id="jobs-count">Loading jobs...</div>
       <div id="jobs-list">
-        <div style="text-align:center;padding:40px;color:var(--muted)">
+        <div style="text-align:center;padding:60px;color:var(--muted)">
           <div class="spinner" style="border-color:rgba(91,94,244,.3);border-top-color:var(--accent);width:32px;height:32px;margin:0 auto 12px"></div>
-          Fetching jobs from Supabase...
+          Fetching jobs...
         </div>
       </div>
     </div>
@@ -586,17 +477,12 @@ main{position:relative;z-index:1}
       <div class="kpi-card"><div class="kpi-icon">⭐</div><div class="kpi-val" id="kpi-score">—</div><div class="kpi-label">Profile Score</div></div>
     </div>
     <div class="dash-grid">
-      <div class="dash-widget">
-        <h3>📚 My Courses</h3>
-        <div id="dash-courses"><div class="empty-state"><div class="ei">🎓</div><p>No courses enrolled yet.<br>Browse courses to get started!</p></div></div>
-      </div>
-      <div class="dash-widget">
-        <h3>💼 My Applications</h3>
-        <div id="dash-applications"><div class="empty-state"><div class="ei">📋</div><p>No applications yet.<br>Browse jobs and apply!</p></div></div>
-      </div>
+      <div class="dash-widget"><h3>📚 My Courses</h3><div id="dash-courses"><div class="empty-state"><div class="ei">🎓</div><p>No courses enrolled yet</p></div></div></div>
+      <div class="dash-widget"><h3>💼 My Applications</h3><div id="dash-applications"><div class="empty-state"><div class="ei">📋</div><p>No applications yet</p></div></div></div>
     </div>
   </div>
 </div>
+
 <!-- ADMIN -->
 <div class="page fade-in" id="page-admin">
   <div style="max-width:1100px;margin:0 auto;padding:36px 40px 80px">
@@ -604,66 +490,53 @@ main{position:relative;z-index:1}
       <div>
         <div class="badge">⚙️ Admin Panel</div>
         <h1 style="font-family:'Playfair Display',serif;font-size:36px;font-weight:800;margin:10px 0 8px">Manage Content</h1>
-        <p style="color:var(--muted);font-size:15px">Edit course names, titles, prices and job listings directly here.</p>
+        <p style="color:var(--muted);font-size:15px">Edit courses and job listings directly here.</p>
       </div>
-      <button onclick="logoutAdmin()" style="margin-top:14px;padding:9px 18px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:9px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">🔒 Exit Admin</button>
+      <button onclick="logoutAdmin()" style="margin-top:14px;padding:9px 18px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:9px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer">🔒 Exit Admin</button>
     </div>
-
-    <!-- TABS -->
     <div style="display:flex;gap:8px;margin-bottom:24px">
-      <button class="filter-btn active" id="admin-tab-courses" onclick="switchAdminTab('courses',this)">🎓 Courses (${allCourses.length})</button>
+      <button class="filter-btn active" id="admin-tab-courses" onclick="switchAdminTab('courses',this)">🎓 Courses</button>
       <button class="filter-btn" id="admin-tab-jobs" onclick="switchAdminTab('jobs',this)">💼 Jobs</button>
     </div>
-
-    <!-- ADD BUTTON ROW -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <p style="font-size:13px;color:var(--muted)" id="admin-count">Showing all courses</p>
+      <p style="font-size:13px;color:var(--muted)" id="admin-count"></p>
       <button class="btn-primary" style="font-size:13px;padding:9px 20px" onclick="openAddModal()">+ Add New</button>
     </div>
-
-    <!-- TABLE -->
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 2px 16px rgba(91,94,244,.07)">
       <div id="admin-table"></div>
     </div>
   </div>
 </div>
-
 </main>
 
-<!-- FOOTER with hidden admin link -->
+<!-- FOOTER -->
 <footer style="border-top:1px solid var(--border);padding:28px 40px;background:var(--surface2);position:relative;z-index:1">
   <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
     <p style="font-size:12.5px;color:var(--muted)">© 2026 SkillLaunch. All rights reserved.</p>
     <div style="display:flex;gap:20px;align-items:center">
       <span style="font-size:12.5px;color:var(--muted)">Privacy · Terms · Support</span>
-      <!-- Hidden admin entry — subtle, only those who know will click it -->
-      <span 
-        id="footer-admin-link"
-        onclick="isAdminLoggedIn ? (showPage('admin',document.getElementById('admin-tab-btn')),renderAdminTable()) : openAdminLogin()"
-        title="Admin"
-        style="font-size:12px;color:transparent;cursor:default;user-select:none;padding:4px 8px;border-radius:6px;transition:all .3s"
-        onmouseover="this.style.color='var(--muted)';this.style.background='var(--surface)';this.style.cursor='pointer'"
-        onmouseout="this.style.color='transparent';this.style.background='transparent';this.style.cursor='default'"
-      >⚙ Admin</span>
+      <span id="footer-admin-link" onclick="isAdminLoggedIn?showPage('admin',document.getElementById('admin-tab-btn')):openAdminLogin()" style="font-size:12px;color:transparent;cursor:default;padding:4px 8px;border-radius:6px;transition:all .3s" onmouseover="this.style.color='var(--muted)';this.style.cursor='pointer'" onmouseout="this.style.color='transparent';this.style.cursor='default'">⚙ Admin</span>
     </div>
   </div>
 </footer>
 
 <script>
-// ═══════════════════════════════════════════════
-//  CONFIG & STATE
-// ═══════════════════════════════════════════════
-let SB_URL = localStorage.getItem('https://qosncefbfvlazlokzyml.supabase.co') || '';
-let SB_KEY = localStorage.getItem('sb_publishable_ZXdPWausb5BQEME_ZSpBZw_3gHqAVqv') || '';
-let currentUser = null;
-let allCourses = [];
-let allJobs = [];
-let enrolledCourseIds = new Set();
-let appliedJobIds = new Set();
-let currentCategory = 'all';
+// ╔══════════════════════════════════════════════╗
+// ║     🔧 PASTE YOUR SUPABASE KEYS BELOW        ║
+// ╚══════════════════════════════════════════════╝
+let SB_URL = '';  // 'https://qosncefbfvlazlokzyml.supabase.co'
+let SB_KEY = '';  // 'sb_publishable_ZXdPWausb5BQEME_ZSpBZw_3gHqAVqv'
 
+// ══ STATE ══
+let currentUser = null, allCourses = [], allJobs = [];
+let enrolledCourseIds = new Set(), appliedJobIds = new Set();
+let currentCategory = 'all', adminTab = 'courses';
+let isAdminLoggedIn = false;
+let fpMethod = 'email', generatedOTP = '', otpTimerHandle = null;
+
+// ══ DEMO DATA ══
 const DEMO_COURSES = [
-  {id:1,title:'ChatGPT Mastery: Zero to Prompt Engineer',description:'Write powerful prompts and 10x your productivity.',category:'AI & ChatGPT',price:1299,original_price:3999,thumbnail:'🤖',bg:'linear-gradient(135deg,#EEF2FF,#E0E7FF)',rating:4.9,students:8200,duration:'12h'},
+  {id:1,title:'ChatGPT Mastery: Zero to Prompt Engineer',description:'Write powerful prompts and 10x your productivity at work.',category:'AI & ChatGPT',price:1299,original_price:3999,thumbnail:'🤖',bg:'linear-gradient(135deg,#EEF2FF,#E0E7FF)',rating:4.9,students:8200,duration:'12h'},
   {id:2,title:'No-Code AI Automation with Make & Zapier',description:'Automate workflows without writing a single line of code.',category:'Automation',price:999,original_price:2499,thumbnail:'⚡',bg:'linear-gradient(135deg,#FDF4FF,#F3E8FF)',rating:4.8,students:5100,duration:'8h'},
   {id:3,title:'AI-Powered Data Analysis with Python',description:'Analyze data and generate insights using AI as your co-pilot.',category:'Data Science',price:1799,original_price:4999,thumbnail:'📊',bg:'linear-gradient(135deg,#ECFDF5,#D1FAE5)',rating:4.7,students:3400,duration:'18h'},
   {id:4,title:'Midjourney AI Image Generation Masterclass',description:'Create stunning visuals and marketing assets with AI.',category:'AI & ChatGPT',price:0,original_price:1999,thumbnail:'🎨',bg:'linear-gradient(135deg,#FFF7ED,#FEF3C7)',rating:4.9,students:6700,duration:'6h'},
@@ -678,219 +551,40 @@ const DEMO_JOBS = [
   {id:5,title:'ML Engineer — NLP',company:'Infosys',location:'Pune · Hybrid',salary:'₹18L–₹30L',type:'Full Time',match:85,featured:false,skills:['Python','NLP','PyTorch'],logo_bg:'rgba(147,51,234,.15)',logo_color:'#C084FC',logo_letter:'I',posted:'3 days ago'},
 ];
 
-// ═══════════════════════════════════════════════
-//  SUPABASE API HELPER
-// ═══════════════════════════════════════════════
+// ══ SUPABASE HELPER ══
 async function sbFetch(path, opts={}) {
   if (!SB_URL || !SB_KEY) return null;
   const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
-    headers: {
-      'apikey': SB_KEY,
-      'Authorization': `Bearer ${SB_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': opts.prefer || '',
-      ...opts.headers
-    },
-    method: opts.method || 'GET',
-    body: opts.body ? JSON.stringify(opts.body) : undefined
+    headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':opts.prefer||'',...(opts.headers||{})},
+    method:opts.method||'GET',
+    body:opts.body?JSON.stringify(opts.body):undefined
   });
-  if (!res.ok) { const e = await res.json(); throw new Error(e.message||'Supabase error'); }
-  return res.status === 204 ? null : res.json();
+  if (!res.ok) { const e=await res.json(); throw new Error(e.message||'Supabase error'); }
+  return res.status===204?null:res.json();
 }
-
-async function sbAuth(action, email, password, name='') {
-  const body = action==='register'
-    ? {email,password,data:{full_name:name}}
-    : {email,password};
-  const res = await fetch(`${SB_URL}/auth/v1/${action==='register'?'signup':'token?grant_type=password'}`, {
-    method:'POST',
-    headers:{'apikey':SB_KEY,'Content-Type':'application/json'},
-    body:JSON.stringify(body)
-  });
-  const data = await res.json();
-  if (data.error || data.error_description) throw new Error(data.error_description||data.error.message);
+async function sbAuth(action,email,password,name='') {
+  const body=action==='register'?{email,password,data:{full_name:name}}:{email,password};
+  const res=await fetch(`${SB_URL}/auth/v1/${action==='register'?'signup':'token?grant_type=password'}`,{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const data=await res.json();
+  if(data.error||data.error_description) throw new Error(data.error_description||data.error.message);
   return data;
 }
 
-// ═══════════════════════════════════════════════
-//  SETUP / CONFIG
-// ═══════════════════════════════════════════════
-function showSetup() { document.getElementById('setup-modal').classList.remove('hidden'); }
-function closeSetup() {
-  document.getElementById('setup-modal').classList.add('hidden');
-  loadAllData().then(() => {
-    renderAdminTable();
-    // Restore admin session only — never show login popup on load
-    if (sessionStorage.getItem('admin_session')) {
-      isAdminLoggedIn = true;
-      const adminBtn = document.getElementById('admin-tab-btn');
-      adminBtn.style.display = 'block';
-      adminBtn.textContent = '⚙️ Admin ●';
-    }
-  });
-}
-function saveConfig() {
-  const url = document.getElementById('sb-url').value.trim();
-  const key = document.getElementById('sb-key').value.trim();
-  if (!url || !key) { toast('Please enter both URL and key','error'); return; }
-  SB_URL = url; SB_KEY = key;
-  localStorage.setItem('sb_url', url);
-  localStorage.setItem('sb_key', key);
-  closeSetup();
-  toast('✅ Supabase connected!','success');
-  loadAllData();
-}
-
-// ═══════════════════════════════════════════════
-//  AUTH
-// ═══════════════════════════════════════════════
-function openAuth(tab='login') {
-  document.getElementById('auth-modal').classList.remove('hidden');
-  switchAuth(tab, document.querySelectorAll('.auth-tab')[tab==='login'?0:1]);
-  clearAuthMsgs();
-}
-function closeAuth() { document.getElementById('auth-modal').classList.add('hidden'); clearAuthMsgs(); }
-function switchAuth(tab, btn) {
-  document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('login-form').style.display = tab==='login'?'block':'none';
-  document.getElementById('register-form').style.display = tab==='register'?'block':'none';
-  clearAuthMsgs();
-}
-function clearAuthMsgs() {
-  ['auth-error','auth-success'].forEach(id=>{ const el=document.getElementById(id); el.style.display='none'; el.textContent=''; });
-}
-function showAuthMsg(msg,type) {
-  const el = document.getElementById(type==='error'?'auth-error':'auth-success');
-  el.textContent = msg; el.style.display = 'block';
-}
-
-async function doLogin() {
-  const email = document.getElementById('login-email').value;
-  const pass = document.getElementById('login-password').value;
-  if (!email||!pass) { showAuthMsg('Please fill all fields','error'); return; }
-  const btn = document.getElementById('login-btn-text');
-  btn.innerHTML = '<span class="spinner"></span>';
-  clearAuthMsgs();
-  try {
-    if (!SB_URL) {
-      // Demo login
-      currentUser = {id:'demo-user',email,user_metadata:{full_name:email.split('@')[0]}};
-      onLoggedIn();
-    } else {
-      const data = await sbAuth('login', email, pass);
-      currentUser = data.user;
-      localStorage.setItem('sb_token', data.access_token);
-      onLoggedIn();
-    }
-    closeAuth();
-    toast('Welcome back! 👋','success');
-  } catch(e) { showAuthMsg(e.message,'error'); }
-  btn.textContent = 'Sign In →';
-}
-
-async function doRegister() {
-  const name = document.getElementById('reg-name').value;
-  const email = document.getElementById('reg-email').value;
-  const pass = document.getElementById('reg-password').value;
-  if (!name||!email||!pass) { showAuthMsg('Please fill all fields','error'); return; }
-  if (pass.length<6) { showAuthMsg('Password must be at least 6 characters','error'); return; }
-  const btn = document.getElementById('reg-btn-text');
-  btn.innerHTML = '<span class="spinner"></span>';
-  clearAuthMsgs();
-  try {
-    if (!SB_URL) {
-      currentUser = {id:'demo-user',email,user_metadata:{full_name:name}};
-      onLoggedIn();
-      closeAuth();
-      toast('Account created! 🎉','success');
-    } else {
-      await sbAuth('register', email, pass, name);
-      showAuthMsg('✅ Account created! Check your email to confirm, then sign in.','success');
-    }
-  } catch(e) { showAuthMsg(e.message,'error'); }
-  btn.textContent = 'Create Account →';
-}
-
-function onLoggedIn() {
-  const name = currentUser?.user_metadata?.full_name || currentUser?.email?.split('@')[0] || 'User';
-  const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  document.getElementById('nav-auth').innerHTML = `
-    <div class="user-pill" onclick="doLogout()">
-      <div class="user-avatar">${initials}</div>
-      ${name} · Sign Out
-    </div>`;
-  loadDashboard();
-}
-
-function doLogout() {
-  currentUser = null;
-  localStorage.removeItem('sb_token');
-  enrolledCourseIds.clear();
-  appliedJobIds.clear();
-  document.getElementById('nav-auth').innerHTML = `
-    <button class="btn-ghost" onclick="openAuth('login')">Sign In</button>
-    <button class="btn-primary" onclick="openAuth('register')">Get Started Free</button>`;
-  renderCourses(allCourses);
-  renderJobs(allJobs);
-  loadDashboard();
-  toast('Signed out','');
-}
-
-// ═══════════════════════════════════════════════
-//  LOAD DATA
-// ═══════════════════════════════════════════════
+// ══ DATA LOADING ══
 async function loadAllData() {
-  loadCourses();
-  loadJobs();
-}
-
-async function loadCourses() {
-  try {
-    const data = await sbFetch('courses?order=id');
-    allCourses = data && data.length ? data : DEMO_COURSES;
-  } catch { allCourses = DEMO_COURSES; }
+  try { const d=await sbFetch('courses?order=id'); allCourses=d&&d.length?d:DEMO_COURSES; } catch { allCourses=DEMO_COURSES; }
+  try { const d=await sbFetch('jobs?order=match.desc'); allJobs=d&&d.length?d:DEMO_JOBS; } catch { allJobs=DEMO_JOBS; }
   renderCourses(allCourses);
-  document.getElementById('stat-courses').textContent = allCourses.length + '+';
-}
-
-async function loadJobs() {
-  try {
-    const data = await sbFetch('jobs?order=match.desc');
-    allJobs = data && data.length ? data : DEMO_JOBS;
-  } catch { allJobs = DEMO_JOBS; }
   renderJobs(allJobs);
-  document.getElementById('stat-jobs').textContent = allJobs.length < 10 ? allJobs.length : allJobs.length + '+';
+  document.getElementById('stat-courses').textContent=allCourses.length+'+';
+  document.getElementById('stat-jobs').textContent=allJobs.length+'+';
 }
 
-async function loadUserEnrollments() {
-  if (!currentUser || !SB_URL) return;
-  try {
-    const data = await sbFetch(`enrollments?user_id=eq.${currentUser.id}&select=course_id`);
-    if (data) data.forEach(e => enrolledCourseIds.add(e.course_id));
-    renderCourses(allCourses);
-  } catch {}
-}
-
-async function loadUserApplications() {
-  if (!currentUser || !SB_URL) return;
-  try {
-    const data = await sbFetch(`applications?user_id=eq.${currentUser.id}&select=job_id`);
-    if (data) data.forEach(a => appliedJobIds.add(a.job_id));
-    renderJobs(allJobs);
-  } catch {}
-}
-
-// ═══════════════════════════════════════════════
-//  RENDER COURSES
-// ═══════════════════════════════════════════════
+// ══ COURSES ══
 function renderCourses(courses) {
-  const grid = document.getElementById('courses-grid');
-  if (!courses.length) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="ei">🎓</div><p>No courses found.</p></div>';
-    return;
-  }
-  grid.innerHTML = courses.map(c => `
+  const g=document.getElementById('courses-grid');
+  if(!courses.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="ei">🎓</div><p>No courses found</p></div>';return;}
+  g.innerHTML=courses.map(c=>`
     <div class="course-card fade-in">
       <div class="course-thumb" style="background:${c.bg||'linear-gradient(135deg,#EEF2FF,#E0E7FF)'}">${c.thumbnail||'📚'}</div>
       <div class="course-body">
@@ -900,52 +594,35 @@ function renderCourses(courses) {
         <div class="stars-sm">${'★'.repeat(Math.floor(c.rating||4))}${'☆'.repeat(5-Math.floor(c.rating||4))}</div>
         <div class="course-meta">
           <div class="course-info"><span>🕐 ${c.duration||'8h'}</span><span>👥 ${(c.students||0).toLocaleString()}</span></div>
-          <div class="course-price">${c.price===0?'FREE':'₹'+c.price?.toLocaleString()} <span class="old">₹${c.original_price?.toLocaleString()}</span></div>
+          <div class="course-price">${c.price===0?'FREE':'₹'+(c.price||0).toLocaleString()} <span class="old">₹${(c.original_price||0).toLocaleString()}</span></div>
         </div>
-        ${enrolledCourseIds.has(c.id)
-          ? `<div class="enrolled-tag">✅ Enrolled</div>`
-          : `<button class="enroll-btn" onclick="enrollCourse(${c.id})">${c.price===0?'Enroll Free →':'Enroll Now →'}</button>`}
+        ${enrolledCourseIds.has(c.id)?`<div class="enrolled-tag">✅ Enrolled</div>`:`<button class="enroll-btn" onclick="enrollCourse(${c.id})">${c.price===0?'Enroll Free →':'Enroll Now →'}</button>`}
       </div>
     </div>`).join('');
 }
-
-function filterCourses(cat, btn) {
-  currentCategory = cat;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+function filterCourses(cat,btn) {
+  currentCategory=cat;
+  document.querySelectorAll('.filter-bar .filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  const filtered = cat==='all' ? allCourses : allCourses.filter(c=>c.category===cat);
-  renderCourses(filtered);
+  renderCourses(cat==='all'?allCourses:allCourses.filter(c=>c.category===cat));
 }
-
-async function enrollCourse(courseId) {
-  if (!currentUser) { openAuth('login'); toast('Sign in to enroll in courses','error'); return; }
+async function enrollCourse(id) {
+  if(!currentUser){openAuth('login');toast('Sign in to enroll','error');return;}
   try {
-    if (SB_URL) {
-      await sbFetch('enrollments', {
-        method:'POST', prefer:'return=minimal',
-        body:{user_id:currentUser.id, course_id:courseId, progress:0}
-      });
-    }
-    enrolledCourseIds.add(courseId);
+    if(SB_URL) await sbFetch('enrollments',{method:'POST',prefer:'return=minimal',body:{user_id:currentUser.id,course_id:id,progress:0}});
+    enrolledCourseIds.add(id);
     renderCourses(currentCategory==='all'?allCourses:allCourses.filter(c=>c.category===currentCategory));
     loadDashboard();
-    toast('🎉 Enrolled successfully!','success');
-    showSQL(`INSERT INTO enrollments (user_id, course_id, progress)\nVALUES ('${currentUser.id}', ${courseId}, 0);`);
-  } catch(e) { toast('Error: '+e.message,'error'); }
+    toast('🎉 Enrolled!','success');
+  } catch(e){toast('Error: '+e.message,'error');}
 }
 
-// ═══════════════════════════════════════════════
-//  RENDER JOBS
-// ═══════════════════════════════════════════════
+// ══ JOBS ══
 function renderJobs(jobs) {
-  const list = document.getElementById('jobs-list');
-  const count = document.getElementById('jobs-count');
-  count.innerHTML = `Showing <strong>${jobs.length}</strong> jobs matched to your profile`;
-  if (!jobs.length) {
-    list.innerHTML = '<div class="empty-state"><div class="ei">💼</div><p>No jobs found with these filters.</p></div>';
-    return;
-  }
-  list.innerHTML = jobs.map(j => `
+  document.getElementById('jobs-count').innerHTML=`Showing <strong>${jobs.length}</strong> jobs`;
+  const l=document.getElementById('jobs-list');
+  if(!jobs.length){l.innerHTML='<div class="empty-state"><div class="ei">💼</div><p>No jobs found</p></div>';return;}
+  l.innerHTML=jobs.map(j=>`
     <div class="job-card ${j.featured?'featured':''} fade-in">
       <div class="jc-top">
         <div class="jc-left">
@@ -959,718 +636,304 @@ function renderJobs(jobs) {
       </div>
       <div class="jc-bottom">
         <div class="jc-tags">${(j.skills||[]).map(s=>`<span class="skill-tag">${s}</span>`).join('')}</div>
-        ${appliedJobIds.has(j.id)
-          ? `<span class="applied-tag">✅ Applied</span>`
-          : `<button class="apply-btn" onclick="applyJob(${j.id})">Quick Apply</button>`}
+        ${appliedJobIds.has(j.id)?`<span class="applied-tag">✅ Applied</span>`:`<button class="apply-btn" onclick="applyJob(${j.id})">Quick Apply</button>`}
       </div>
       <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">${j.salary||''} · Posted ${j.posted||'recently'}</div>
     </div>`).join('');
 }
-
 function applyJobFilters() {
-  const q = document.getElementById('job-search-input').value.toLowerCase();
-  const salary = parseInt(document.querySelector('.salary-range').value);
-  const filtered = allJobs.filter(j => {
-    const matchText = !q || j.title.toLowerCase().includes(q) || j.company?.toLowerCase().includes(q) || (j.skills||[]).some(s=>s.toLowerCase().includes(q));
-    const salNum = parseInt((j.salary||'0').replace(/[^\d]/g,'').slice(0,4)||0);
-    const matchSal = salNum <= salary*100 || salary >= 50;
-    return matchText && matchSal;
-  });
-  renderJobs(filtered);
+  const q=document.getElementById('job-search-input').value.toLowerCase();
+  const sal=parseInt(document.querySelector('.salary-range').value);
+  renderJobs(allJobs.filter(j=>{
+    const t=!q||j.title.toLowerCase().includes(q)||j.company?.toLowerCase().includes(q)||(j.skills||[]).some(s=>s.toLowerCase().includes(q));
+    return t;
+  }));
 }
-
-async function applyJob(jobId) {
-  if (!currentUser) { openAuth('login'); toast('Sign in to apply for jobs','error'); return; }
+async function applyJob(id) {
+  if(!currentUser){openAuth('login');toast('Sign in to apply','error');return;}
   try {
-    if (SB_URL) {
-      await sbFetch('applications', {
-        method:'POST', prefer:'return=minimal',
-        body:{user_id:currentUser.id, job_id:jobId, status:'applied'}
-      });
-    }
-    appliedJobIds.add(jobId);
+    if(SB_URL) await sbFetch('applications',{method:'POST',prefer:'return=minimal',body:{user_id:currentUser.id,job_id:id,status:'applied'}});
+    appliedJobIds.add(id);
     renderJobs(allJobs);
     loadDashboard();
     toast('🚀 Application submitted!','success');
-    showSQL(`INSERT INTO applications (user_id, job_id, status)\nVALUES ('${currentUser.id}', ${jobId}, 'applied');`);
-  } catch(e) { toast('Error: '+e.message,'error'); }
+  } catch(e){toast('Error: '+e.message,'error');}
 }
 
-// ═══════════════════════════════════════════════
-//  DASHBOARD
-// ═══════════════════════════════════════════════
+// ══ DASHBOARD ══
 async function loadDashboard() {
-  if (!currentUser) {
-    document.getElementById('dash-title').textContent = 'Your Dashboard 👋';
-    document.getElementById('dash-subtitle').textContent = 'Sign in to see your personalized dashboard';
-    document.getElementById('kpi-courses').textContent = '0';
-    document.getElementById('kpi-apps').textContent = '0';
-    document.getElementById('kpi-interviews').textContent = '0';
-    document.getElementById('kpi-score').textContent = '—';
-    document.getElementById('dash-courses').innerHTML = '<div class="empty-state"><div class="ei">🎓</div><p>Sign in to see your courses</p></div>';
-    document.getElementById('dash-applications').innerHTML = '<div class="empty-state"><div class="ei">📋</div><p>Sign in to see your applications</p></div>';
+  if(!currentUser){
+    document.getElementById('dash-title').textContent='Your Dashboard 👋';
+    document.getElementById('dash-subtitle').textContent='Sign in to see your personalized dashboard';
+    ['kpi-courses','kpi-apps','kpi-interviews'].forEach(id=>document.getElementById(id).textContent='0');
+    document.getElementById('kpi-score').textContent='—';
+    document.getElementById('dash-courses').innerHTML='<div class="empty-state"><div class="ei">🎓</div><p>Sign in to see your courses</p></div>';
+    document.getElementById('dash-applications').innerHTML='<div class="empty-state"><div class="ei">📋</div><p>Sign in to see your applications</p></div>';
     return;
   }
-
-  let enrollments = [], applications = [];
+  let enr=[],apps=[];
   try {
-    if (SB_URL) {
-      const [e,a] = await Promise.all([
-        sbFetch(`enrollments?user_id=eq.${currentUser.id}&select=*,courses(*)`),
-        sbFetch(`applications?user_id=eq.${currentUser.id}&select=*,jobs(*)`)
-      ]);
-      enrollments = e||[]; applications = a||[];
+    if(SB_URL){
+      const[e,a]=await Promise.all([sbFetch(`enrollments?user_id=eq.${currentUser.id}&select=*,courses(*)`),sbFetch(`applications?user_id=eq.${currentUser.id}&select=*,jobs(*)`)]);
+      enr=e||[];apps=a||[];
     } else {
-      // Demo: use in-memory state
-      enrollments = [...enrolledCourseIds].map(id=>({course_id:id,progress:Math.floor(Math.random()*80+10),courses:allCourses.find(c=>c.id===id)||{title:'Course '+id}}));
-      applications = [...appliedJobIds].map(id=>({job_id:id,status:'applied',jobs:allJobs.find(j=>j.id===id)||{title:'Job '+id,company:'Company'}}));
+      enr=[...enrolledCourseIds].map(id=>({course_id:id,progress:Math.floor(Math.random()*80+10),courses:allCourses.find(c=>c.id===id)||{title:'Course '+id}}));
+      apps=[...appliedJobIds].map(id=>({job_id:id,status:'applied',jobs:allJobs.find(j=>j.id===id)||{title:'Job '+id,company:'Company'}}));
     }
-  } catch {}
-
-  const name = currentUser?.user_metadata?.full_name || currentUser?.email?.split('@')[0] || 'User';
-  document.getElementById('dash-title').textContent = `Welcome back, ${name} 👋`;
-  document.getElementById('dash-subtitle').textContent = `You have ${enrollments.length} course${enrollments.length!==1?'s':''} and ${applications.length} application${applications.length!==1?'s':''}.`;
-  document.getElementById('kpi-courses').textContent = enrollments.length;
-  document.getElementById('kpi-apps').textContent = applications.length;
-  document.getElementById('kpi-interviews').textContent = applications.filter(a=>a.status==='interview').length;
-  const score = enrollments.length > 0 ? Math.min(100,60+enrollments.length*8+applications.length*3)+'%' : '—';
-  document.getElementById('kpi-score').textContent = score;
-
-  // Courses widget
-  document.getElementById('dash-courses').innerHTML = enrollments.length
-    ? enrollments.map(e=>{
-        const c = e.courses||{};
-        const p = e.progress||0;
-        return `<div class="progress-item">
-          <div class="progress-label"><span>${c.title||'Course'}</span><span>${p}%</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${p}%;${p>=100?'background:linear-gradient(90deg,var(--green),#34D399)':''}"></div></div>
-        </div>`;}).join('')
-    : '<div class="empty-state"><div class="ei">🎓</div><p>No courses yet</p></div>';
-
-  // Applications widget
-  const statusStyle = {applied:'background:rgba(245,158,11,.1);color:var(--orange)',interview:'background:rgba(5,150,105,.1);color:var(--green)',rejected:'background:rgba(239,68,68,.1);color:var(--red)',shortlisted:'background:rgba(91,94,244,.1);color:var(--accent)'};
-  document.getElementById('dash-applications').innerHTML = applications.length
-    ? applications.map(a=>{
-        const j = a.jobs||{};
-        const st = a.status||'applied';
-        const dot = {applied:'#F59E0B',interview:'#059669',rejected:'#EF4444',shortlisted:'#5B5EF4'}[st]||'#94A3B8';
-        return `<div class="recent-item">
-          <div class="ri-dot" style="background:${dot}"></div>
-          <div class="ri-info"><h4>${j.title||'Job'}</h4><p>${j.company||''}</p></div>
-          <span class="ri-status" style="${statusStyle[st]||''}">${st.charAt(0).toUpperCase()+st.slice(1)}</span>
-        </div>`;}).join('')
-    : '<div class="empty-state"><div class="ei">📋</div><p>No applications yet</p></div>';
+  } catch{}
+  const name=currentUser?.user_metadata?.full_name||currentUser?.email?.split('@')[0]||'User';
+  document.getElementById('dash-title').textContent=`Welcome back, ${name} 👋`;
+  document.getElementById('dash-subtitle').textContent=`${enr.length} course(s) · ${apps.length} application(s)`;
+  document.getElementById('kpi-courses').textContent=enr.length;
+  document.getElementById('kpi-apps').textContent=apps.length;
+  document.getElementById('kpi-interviews').textContent=apps.filter(a=>a.status==='interview').length;
+  document.getElementById('kpi-score').textContent=enr.length>0?Math.min(100,60+enr.length*8+apps.length*3)+'%':'—';
+  document.getElementById('dash-courses').innerHTML=enr.length?enr.map(e=>{const c=e.courses||{};const p=e.progress||0;return`<div class="progress-item"><div class="progress-label"><span>${c.title||'Course'}</span><span>${p}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${p}%"></div></div></div>`;}).join(''):'<div class="empty-state"><div class="ei">🎓</div><p>No courses yet</p></div>';
+  const ss={applied:'background:rgba(245,158,11,.1);color:var(--orange)',interview:'background:rgba(5,150,105,.1);color:var(--green)',rejected:'background:rgba(239,68,68,.1);color:var(--red)',shortlisted:'background:rgba(91,94,244,.1);color:var(--accent)'};
+  document.getElementById('dash-applications').innerHTML=apps.length?apps.map(a=>{const j=a.jobs||{};const st=a.status||'applied';const dot={applied:'#F59E0B',interview:'#059669',rejected:'#EF4444',shortlisted:'#5B5EF4'}[st]||'#94A3B8';return`<div class="recent-item"><div class="ri-dot" style="background:${dot}"></div><div class="ri-info"><h4>${j.title||'Job'}</h4><p>${j.company||''}</p></div><span class="ri-status" style="${ss[st]||''}">${st.charAt(0).toUpperCase()+st.slice(1)}</span></div>`;}).join(''):'<div class="empty-state"><div class="ei">📋</div><p>No applications yet</p></div>';
 }
 
-// ═══════════════════════════════════════════════
-//  UI HELPERS
-// ═══════════════════════════════════════════════
-function showPage(id, btn) {
+// ══ AUTH ══
+function openAuth(tab='login'){document.getElementById('auth-modal').classList.remove('hidden');switchAuth(tab,document.querySelectorAll('.auth-tab')[tab==='login'?0:1]);clearAuthMsgs();}
+function closeAuth(){document.getElementById('auth-modal').classList.add('hidden');clearAuthMsgs();}
+function switchAuth(tab,btn){document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('login-form').style.display=tab==='login'?'block':'none';document.getElementById('register-form').style.display=tab==='register'?'block':'none';clearAuthMsgs();}
+function clearAuthMsgs(){['auth-error','auth-success'].forEach(id=>{const el=document.getElementById(id);el.style.display='none';el.textContent='';})}
+function showAuthMsg(msg,type){const el=document.getElementById(type==='error'?'auth-error':'auth-success');el.textContent=msg;el.style.display='block';}
+async function doLogin(){
+  const email=document.getElementById('login-email').value,pass=document.getElementById('login-password').value;
+  if(!email||!pass){showAuthMsg('Please fill all fields','error');return;}
+  const btn=document.getElementById('login-btn-text');btn.innerHTML='<span class="spinner"></span>';clearAuthMsgs();
+  try{
+    if(!SB_URL){currentUser={id:'demo-user',email,user_metadata:{full_name:email.split('@')[0]}};onLoggedIn();}
+    else{const d=await sbAuth('login',email,pass);currentUser=d.user;localStorage.setItem('sb_token',d.access_token);onLoggedIn();}
+    closeAuth();toast('Welcome back! 👋','success');
+  }catch(e){showAuthMsg(e.message,'error');}
+  btn.textContent='Sign In →';
+}
+async function doRegister(){
+  const name=document.getElementById('reg-name').value,email=document.getElementById('reg-email').value,pass=document.getElementById('reg-password').value;
+  if(!name||!email||!pass){showAuthMsg('Please fill all fields','error');return;}
+  if(pass.length<6){showAuthMsg('Password must be at least 6 characters','error');return;}
+  const btn=document.getElementById('reg-btn-text');btn.innerHTML='<span class="spinner"></span>';clearAuthMsgs();
+  try{
+    if(!SB_URL){currentUser={id:'demo-user',email,user_metadata:{full_name:name}};onLoggedIn();closeAuth();toast('Account created! 🎉','success');}
+    else{await sbAuth('register',email,pass,name);showAuthMsg('✅ Check your email to confirm, then sign in.','success');}
+  }catch(e){showAuthMsg(e.message,'error');}
+  btn.textContent='Create Account →';
+}
+function onLoggedIn(){
+  const name=currentUser?.user_metadata?.full_name||currentUser?.email?.split('@')[0]||'User';
+  const initials=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('nav-auth').innerHTML=`<div class="user-pill" onclick="doLogout()"><div class="user-avatar">${initials}</div>${name} · Sign Out</div>`;
+  loadDashboard();
+}
+function doLogout(){
+  currentUser=null;localStorage.removeItem('sb_token');enrolledCourseIds.clear();appliedJobIds.clear();
+  document.getElementById('nav-auth').innerHTML=`<button class="btn-ghost" onclick="openAuth('login')">Sign In</button><button class="btn-primary" onclick="openAuth('register')">Get Started Free</button>`;
+  renderCourses(allCourses);renderJobs(allJobs);loadDashboard();toast('Signed out','');
+}
+
+// ══ ADMIN AUTH ══
+const ADMIN_EMAIL='admin@skillaunch.com', ADMIN_PASSWORD='admin123';
+function openAdminLogin(){document.getElementById('admin-login-modal').classList.remove('hidden');setTimeout(()=>document.getElementById('admin-email').focus(),100);}
+function closeAdminLogin(){document.getElementById('admin-login-modal').classList.add('hidden');document.getElementById('admin-email').value='';document.getElementById('admin-password').value='';document.getElementById('admin-login-error').style.display='none';}
+async function doAdminLogin(){
+  const email=document.getElementById('admin-email').value.trim(),pass=document.getElementById('admin-password').value;
+  const errEl=document.getElementById('admin-login-error'),btn=document.getElementById('admin-login-btn-text');
+  errEl.style.display='none';
+  if(!email||!pass){errEl.textContent='Please enter email and password.';errEl.style.display='block';return;}
+  btn.innerHTML='<span class="spinner"></span> Verifying...';
+  await new Promise(r=>setTimeout(r,600));
+  if(SB_URL){
+    try{
+      const d=await sbAuth('login',email,pass);
+      const isAdmin=email===ADMIN_EMAIL;
+      if(!isAdmin) throw new Error('You do not have admin access.');
+      localStorage.setItem('admin_token',d.access_token);
+      grantAdminAccess();
+    }catch(e){errEl.textContent=e.message||'Invalid credentials.';errEl.style.display='block';}
+  } else {
+    const validPass=window.__adminPwdOverride||ADMIN_PASSWORD;
+    if(email===ADMIN_EMAIL&&pass===validPass) grantAdminAccess();
+    else{errEl.textContent='❌ Wrong email or password.';errEl.style.display='block';}
+  }
+  btn.textContent='Unlock Admin Panel →';
+}
+function grantAdminAccess(){
+  isAdminLoggedIn=true;sessionStorage.setItem('admin_session','1');
+  closeAdminLogin();
+  const btn=document.getElementById('admin-tab-btn');
+  btn.style.display='block';
+  showPage('admin',btn);
+  renderAdminTable();
+  toast('🔐 Admin access granted!','success');
+}
+function logoutAdmin(){
+  isAdminLoggedIn=false;sessionStorage.removeItem('admin_session');localStorage.removeItem('admin_token');
+  document.getElementById('admin-tab-btn').style.display='none';
+  showPage('home',document.querySelectorAll('.tab-btn')[0]);
+  toast('Admin session ended','');
+}
+function togglePwd(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈';}
+
+// ══ FORGOT PASSWORD ══
+function openForgotPassword(){closeAdminLogin();fpGoToStep(1);document.getElementById('forgot-modal').classList.remove('hidden');}
+function closeForgotPassword(){document.getElementById('forgot-modal').classList.add('hidden');clearInterval(otpTimerHandle);openAdminLogin();}
+function fpGoToStep(n){
+  [1,2,3,4].forEach(i=>{
+    document.getElementById(`fp-step${i}`).style.display=i===n?'block':'none';
+    const d=document.getElementById(`dot-${i}`);
+    d.style.background=i<=n?'var(--accent)':'var(--border)';
+    d.style.width=i===n?'24px':'8px';
+  });
+  document.getElementById('fp-steps-indicator').style.display=n===4?'none':'flex';
+}
+function selectMethod(m,btn){
+  fpMethod=m;
+  ['method-email','method-otp'].forEach(id=>{const b=document.getElementById(id);b.style.border='1.5px solid var(--border)';b.style.background='transparent';b.style.color='var(--muted)';});
+  btn.style.border='1.5px solid var(--accent)';btn.style.background='rgba(91,94,244,.08)';btn.style.color='var(--accent)';
+  document.getElementById('method-desc').textContent=m==='email'?'A secure reset link will be sent to your email.':'A 6-digit OTP will be sent to your email.';
+  document.getElementById('fp-send-btn').textContent=m==='email'?'Send Reset Link →':'Send OTP Code →';
+}
+async function sendResetOTP(){
+  const email=document.getElementById('fp-email').value.trim(),errEl=document.getElementById('fp-error1'),btn=document.getElementById('fp-send-btn');
+  errEl.style.display='none';
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){errEl.textContent='Please enter a valid email.';errEl.style.display='block';return;}
+  btn.innerHTML='<span class="spinner"></span> Sending...';
+  await new Promise(r=>setTimeout(r,900));
+  if(fpMethod==='email'){
+    if(SB_URL) await fetch(`${SB_URL}/auth/v1/recover`,{method:'POST',headers:{'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email})}).catch(()=>{});
+    btn.textContent='Send Reset Link →';
+    document.getElementById('forgot-modal').querySelector('div').innerHTML=`<div style="text-align:center;padding:20px 0"><div style="width:64px;height:64px;background:linear-gradient(135deg,#F59E0B,#EF4444);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 18px">📧</div><h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:10px">Check Your Inbox!</h2><p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:8px">Reset link sent to</p><p style="font-weight:700;font-size:15px;margin-bottom:24px;color:var(--accent)">${email}</p><p style="color:var(--muted);font-size:13px;margin-bottom:24px">Click the link in your email to reset your password.</p><button onclick="closeForgotPassword()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer">Back to Login</button></div>`;
+    return;
+  }
+  generatedOTP=Math.floor(100000+Math.random()*900000).toString();
+  console.log(`%c[DEV] OTP: ${generatedOTP}`,'background:#818CF8;color:#fff;padding:4px 10px;border-radius:6px;font-weight:bold');
+  document.getElementById('fp-sent-to').textContent=email;
+  document.querySelectorAll('.otp-box').forEach(b=>{b.value='';b.style.borderColor='var(--border)';});
+  fpGoToStep(2);startOTPTimer(300);
+  setTimeout(()=>document.querySelectorAll('.otp-box')[0].focus(),100);
+  btn.textContent='Send OTP Code →';
+  toast('📨 OTP sent! Check browser console (F12).','success');
+}
+function otpInput(el,idx){el.value=el.value.replace(/[^0-9]/g,'');if(el.value&&idx<5)document.querySelectorAll('.otp-box')[idx+1].focus();const v=[...document.querySelectorAll('.otp-box')].map(b=>b.value);if(v.every(x=>x))verifyOTP();}
+function otpKey(e,idx){if(e.key==='Backspace'&&!e.target.value&&idx>0)document.querySelectorAll('.otp-box')[idx-1].focus();}
+async function verifyOTP(){
+  const entered=[...document.querySelectorAll('.otp-box')].map(b=>b.value).join(''),errEl=document.getElementById('fp-error2'),btn=document.getElementById('fp-verify-btn');
+  errEl.style.display='none';
+  if(entered.length<6){errEl.textContent='Please enter all 6 digits.';errEl.style.display='block';return;}
+  btn.innerHTML='<span class="spinner"></span> Verifying...';
+  await new Promise(r=>setTimeout(r,700));
+  if(entered===generatedOTP){clearInterval(otpTimerHandle);document.querySelectorAll('.otp-box').forEach(b=>{b.style.borderColor='var(--green)';});setTimeout(()=>fpGoToStep(3),400);}
+  else{errEl.textContent='❌ Wrong OTP. Try again.';errEl.style.display='block';document.querySelectorAll('.otp-box').forEach(b=>{b.value='';b.style.borderColor='var(--red)';});document.querySelectorAll('.otp-box')[0].focus();}
+  btn.textContent='Verify OTP →';
+}
+function resendOTP(){generatedOTP=Math.floor(100000+Math.random()*900000).toString();console.log(`%c[DEV] New OTP: ${generatedOTP}`,'background:#818CF8;color:#fff;padding:4px 10px;border-radius:6px;font-weight:bold');document.querySelectorAll('.otp-box').forEach(b=>{b.value='';b.style.borderColor='var(--border)';});startOTPTimer(300);toast('📨 New OTP sent! Check console.','success');}
+function startOTPTimer(s){clearInterval(otpTimerHandle);let sec=s;const el=document.getElementById('otp-timer');otpTimerHandle=setInterval(()=>{sec--;const m=Math.floor(sec/60),ss=sec%60;el.textContent=`${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;el.style.color=sec<60?'var(--red)':'var(--accent)';if(sec<=0){clearInterval(otpTimerHandle);el.textContent='Expired';document.getElementById('fp-error2').textContent='⏰ OTP expired. Request a new one.';document.getElementById('fp-error2').style.display='block';}},1000);}
+function checkPasswordStrength(v){const r={length:v.length>=8,upper:/[A-Z]/.test(v),number:/[0-9]/.test(v),special:/[!@#$%^&*(),.?":{}|<>]/.test(v)};const s=Object.values(r).filter(Boolean).length;const bar=document.getElementById('strength-bar'),lbl=document.getElementById('strength-label');const col=['','#EF4444','#F59E0B','#3B82F6','var(--green)'],labels=['','Weak','Fair','Good','Strong 💪'];bar.style.width=s*25+'%';bar.style.background=col[s]||'var(--border)';lbl.textContent=v?labels[s]:'';lbl.style.color=col[s];const set=(id,ok)=>{const el=document.getElementById(id);el.textContent=(ok?'✅':'⬜')+el.textContent.slice(2);el.className='req-item'+(ok?' req-ok':'');};set('req-length',r.length);set('req-upper',r.upper);set('req-number',r.number);set('req-special',r.special);}
+async function saveNewPassword(){
+  const np=document.getElementById('fp-new-pass').value,cp=document.getElementById('fp-confirm-pass').value,errEl=document.getElementById('fp-error3'),btn=document.getElementById('fp-save-btn');
+  errEl.style.display='none';
+  if(np.length<8){errEl.textContent='Password must be at least 8 characters.';errEl.style.display='block';return;}
+  if(!/[A-Z]/.test(np)){errEl.textContent='Add at least one uppercase letter.';errEl.style.display='block';return;}
+  if(!/[0-9]/.test(np)){errEl.textContent='Add at least one number.';errEl.style.display='block';return;}
+  if(np!==cp){errEl.textContent='Passwords do not match.';errEl.style.display='block';return;}
+  btn.innerHTML='<span class="spinner"></span> Saving...';
+  await new Promise(r=>setTimeout(r,800));
+  window.__adminPwdOverride=np;
+  fpGoToStep(4);
+  btn.textContent='Save New Password →';
+}
+function fpGoToLogin(){document.getElementById('forgot-modal').classList.add('hidden');clearInterval(otpTimerHandle);openAdminLogin();toast('Password updated! Please sign in.','success');}
+
+// ══ ADMIN PANEL ══
+function switchAdminTab(tab,btn){adminTab=tab;document.querySelectorAll('#page-admin .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAdminTable();}
+function renderAdminTable(){
+  const tbl=document.getElementById('admin-table');
+  if(adminTab==='courses'){
+    document.getElementById('admin-count').textContent=`Showing ${allCourses.length} courses`;
+    tbl.innerHTML=`<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--surface2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)"><th style="padding:14px 20px;text-align:left">Icon</th><th style="padding:14px 20px;text-align:left">Title</th><th style="padding:14px 20px;text-align:left">Category</th><th style="padding:14px 20px;text-align:left">Price</th><th style="padding:14px 20px;text-align:left">Actions</th></tr></thead><tbody>${allCourses.map(c=>`<tr style="border-top:1px solid var(--border)" onmouseover="this.style.background='rgba(91,94,244,.03)'" onmouseout="this.style.background=''"><td style="padding:14px 20px;font-size:22px">${c.thumbnail||'📚'}</td><td style="padding:14px 20px"><div style="font-size:14px;font-weight:600;max-width:260px;line-height:1.4">${c.title}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">${(c.description||'').slice(0,55)}...</div></td><td style="padding:14px 20px"><span style="background:rgba(91,94,244,.1);color:var(--accent);font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px">${c.category}</span></td><td style="padding:14px 20px;font-weight:700">${c.price===0?'<span style="color:var(--green)">FREE</span>':'₹'+(c.price||0).toLocaleString()}</td><td style="padding:14px 20px"><div style="display:flex;gap:8px"><button onclick="openEditModal('course',${c.id})" style="padding:6px 14px;background:rgba(91,94,244,.1);color:var(--accent);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">✏️ Edit</button><button onclick="deleteItem('course',${c.id})" style="padding:6px 14px;background:rgba(239,68,68,.08);color:var(--red);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">🗑️</button></div></td></tr>`).join('')}</tbody></table>`;
+  } else {
+    document.getElementById('admin-count').textContent=`Showing ${allJobs.length} jobs`;
+    tbl.innerHTML=`<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--surface2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)"><th style="padding:14px 20px;text-align:left">Company</th><th style="padding:14px 20px;text-align:left">Job Title</th><th style="padding:14px 20px;text-align:left">Location</th><th style="padding:14px 20px;text-align:left">Salary</th><th style="padding:14px 20px;text-align:left">Actions</th></tr></thead><tbody>${allJobs.map(j=>`<tr style="border-top:1px solid var(--border)" onmouseover="this.style.background='rgba(91,94,244,.03)'" onmouseout="this.style.background=''"><td style="padding:14px 20px"><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:8px;background:${j.logo_bg||'rgba(91,94,244,.15)'};color:${j.logo_color||'#818CF8'};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px">${j.logo_letter||'?'}</div><span style="font-weight:600;font-size:13px">${j.company}</span></div></td><td style="padding:14px 20px;font-size:14px;font-weight:600">${j.title}</td><td style="padding:14px 20px;font-size:13px;color:var(--muted)">${j.location}</td><td style="padding:14px 20px;font-size:13px;font-weight:600">${j.salary}</td><td style="padding:14px 20px"><div style="display:flex;gap:8px"><button onclick="openEditModal('job',${j.id})" style="padding:6px 14px;background:rgba(91,94,244,.1);color:var(--accent);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">✏️ Edit</button><button onclick="deleteItem('job',${j.id})" style="padding:6px 14px;background:rgba(239,68,68,.08);color:var(--red);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">🗑️</button></div></td></tr>`).join('')}</tbody></table>`;
+  }
+}
+function openEditModal(type,id){
+  const item=type==='course'?allCourses.find(c=>c.id===id):allJobs.find(j=>j.id===id);
+  if(!item)return;
+  document.getElementById('edit-id').value=id;
+  document.getElementById('edit-type').value=type;
+  document.getElementById('edit-modal-title').textContent=type==='course'?'✏️ Edit Course':'✏️ Edit Job';
+  const fields=type==='course'
+    ?[{k:'title',l:'Course Title',v:item.title,t:'text'},{k:'description',l:'Description',v:item.description,t:'textarea'},{k:'category',l:'Category',v:item.category,t:'select',o:['AI & ChatGPT','Automation','Data Science','No-Code','Marketing']},{k:'price',l:'Price (₹) — 0 for Free',v:item.price,t:'number'},{k:'original_price',l:'Original Price (₹)',v:item.original_price,t:'number'},{k:'thumbnail',l:'Emoji Icon',v:item.thumbnail,t:'text'},{k:'duration',l:'Duration (e.g. 8h)',v:item.duration,t:'text'}]
+    :[{k:'title',l:'Job Title',v:item.title,t:'text'},{k:'company',l:'Company',v:item.company,t:'text'},{k:'location',l:'Location',v:item.location,t:'text'},{k:'salary',l:'Salary Range',v:item.salary,t:'text'},{k:'match',l:'Match %',v:item.match,t:'number'},{k:'logo_letter',l:'Logo Letter',v:item.logo_letter,t:'text'}];
+  document.getElementById('edit-fields').innerHTML=fields.map(f=>`<div class="input-group">${f.t==='textarea'?`<label>${f.l}</label><textarea id="ef-${f.k}" rows="2" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13.5px;background:var(--surface2);outline:none;resize:vertical">${f.v||''}</textarea>`:f.t==='select'?`<label>${f.l}</label><select id="ef-${f.k}" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13.5px;background:var(--surface2);outline:none">${f.o.map(o=>`<option${o===f.v?' selected':''}>${o}</option>`).join('')}</select>`:`<label>${f.l}</label><input id="ef-${f.k}" type="${f.t}" value="${f.v||''}" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13.5px;background:var(--surface2);outline:none">`}</div>`).join('');
+  document.getElementById('edit-modal').style.display='flex';
+}
+function closeEditModal(){document.getElementById('edit-modal').style.display='none';}
+async function saveEdit(){
+  const id=parseInt(document.getElementById('edit-id').value),type=document.getElementById('edit-type').value,btn=document.getElementById('save-btn-text');
+  btn.innerHTML='<span class="spinner"></span> Saving...';
+  const fields=type==='course'?['title','description','category','price','original_price','thumbnail','duration']:['title','company','location','salary','match','logo_letter'];
+  const u={};fields.forEach(k=>{const el=document.getElementById('ef-'+k);if(el)u[k]=el.type==='number'?Number(el.value):el.value;});
+  try{
+    if(SB_URL) await sbFetch(`${type==='course'?'courses':'jobs'}?id=eq.${id}`,{method:'PATCH',prefer:'return=minimal',body:u});
+    if(type==='course'){const i=allCourses.findIndex(c=>c.id===id);if(i>=0)allCourses[i]={...allCourses[i],...u};renderCourses(allCourses);}
+    else{const i=allJobs.findIndex(j=>j.id===id);if(i>=0)allJobs[i]={...allJobs[i],...u};renderJobs(allJobs);}
+    renderAdminTable();closeEditModal();toast('✅ Changes saved!','success');
+  }catch(e){toast('Error: '+e.message,'error');}
+  btn.textContent='💾 Save Changes';
+}
+function openAddModal(){
+  const type=adminTab==='courses'?'course':'job',nid=Date.now();
+  if(type==='course') allCourses.push({id:nid,title:'New Course',description:'Description here',category:'AI & ChatGPT',price:999,original_price:1999,thumbnail:'📚',bg:'linear-gradient(135deg,#EEF2FF,#E0E7FF)',rating:4.5,students:0,duration:'4h'});
+  else allJobs.push({id:nid,title:'New Job',company:'Company',location:'Remote',salary:'₹10L–₹15L',match:80,featured:false,skills:[],logo_bg:'rgba(91,94,244,.15)',logo_color:'#818CF8',logo_letter:'C',posted:'just now'});
+  renderAdminTable();openEditModal(type,nid);
+}
+async function deleteItem(type,id){
+  if(!confirm(`Delete this ${type}?`))return;
+  try{
+    if(SB_URL) await sbFetch(`${type==='course'?'courses':'jobs'}?id=eq.${id}`,{method:'DELETE',prefer:'return=minimal'});
+    if(type==='course'){allCourses=allCourses.filter(c=>c.id!==id);renderCourses(allCourses);}
+    else{allJobs=allJobs.filter(j=>j.id!==id);renderJobs(allJobs);}
+    renderAdminTable();toast('🗑️ Deleted','');
+  }catch(e){toast('Error: '+e.message,'error');}
+}
+
+// ══ UI HELPERS ══
+function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  else {
-    const i = ['home','courses','jobs','dashboard'].indexOf(id);
-    if (i>=0) document.querySelectorAll('.tab-btn')[i].classList.add('active');
-  }
+  if(btn)btn.classList.add('active');
+  else{const i=['home','courses','jobs','dashboard','admin'].indexOf(id);if(i>=0)document.querySelectorAll('.tab-btn')[i]?.classList.add('active');}
   window.scrollTo({top:0,behavior:'smooth'});
-  if (id==='dashboard') loadDashboard();
+  if(id==='dashboard')loadDashboard();
+  if(id==='admin')renderAdminTable();
 }
-
 let toastTimer;
-function toast(msg, type='') {
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.className = type ? `show ${type}` : 'show';
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>{ el.className=''; },3500);
-}
+function toast(msg,type=''){const el=document.getElementById('toast');el.textContent=msg;el.className=type?`show ${type}`:'show';clearTimeout(toastTimer);toastTimer=setTimeout(()=>{el.className='';},3500);}
 
-function showSQL(sql) {
-  document.getElementById('sql-content').innerHTML = `<code>${sql}</code>`;
-  document.getElementById('sql-panel').classList.add('show');
-  setTimeout(()=>document.getElementById('sql-panel').classList.remove('show'),5000);
-}
-
-// ═══════════════════════════════════════════════
-//  FORGOT PASSWORD FLOW
-// ═══════════════════════════════════════════════
-let fpMethod       = 'email';   // 'email' | 'otp'
-let generatedOTP   = '';
-let otpTimerHandle = null;
-let newAdminPassword = '';
-
-function openForgotPassword() {
-  closeAdminLogin();
-  fpGoToStep(1);
-  document.getElementById('forgot-modal').classList.remove('hidden');
-  document.getElementById('forgot-modal').style.display = 'flex';
-  setTimeout(() => document.getElementById('fp-email').focus(), 120);
-}
-
-function closeForgotPassword() {
-  document.getElementById('forgot-modal').classList.add('hidden');
-  document.getElementById('forgot-modal').style.display = 'none';
-  clearInterval(otpTimerHandle);
-  openAdminLogin();
-}
-
-function fpGoToStep(n) {
-  [1,2,3,4].forEach(i => {
-    document.getElementById(`fp-step${i}`).style.display = i===n ? 'block' : 'none';
-    const dot = document.getElementById(`dot-${i}`);
-    dot.className = i===n ? 'fp-dot active-dot' : (i<n ? 'fp-dot' : 'fp-dot');
-    dot.style.background = i < n ? 'var(--accent)' : i===n ? 'var(--accent)' : 'var(--border)';
-    dot.style.width = i===n ? '24px' : '8px';
-  });
-  // Hide step indicator on success screen
-  document.getElementById('fp-steps-indicator').style.display = n===4 ? 'none' : 'flex';
-}
-
-function fpGoBack(toStep) { fpGoToStep(toStep); }
-
-function selectMethod(m, btn) {
-  fpMethod = m;
-  document.getElementById('method-email').style.border = '1.5px solid var(--border)';
-  document.getElementById('method-email').style.background = 'transparent';
-  document.getElementById('method-email').style.color = 'var(--muted)';
-  document.getElementById('method-otp').style.border = '1.5px solid var(--border)';
-  document.getElementById('method-otp').style.background = 'transparent';
-  document.getElementById('method-otp').style.color = 'var(--muted)';
-  btn.style.border = '1.5px solid var(--accent)';
-  btn.style.background = 'rgba(91,94,244,.08)';
-  btn.style.color = 'var(--accent)';
-  document.getElementById('method-desc').textContent = m==='email'
-    ? 'A secure reset link will be sent to your email. Click it to set a new password.'
-    : 'A 6-digit one-time code will be sent to your email. Enter it to continue.';
-  document.getElementById('fp-send-btn').textContent = m==='email' ? 'Send Reset Link →' : 'Send OTP Code →';
-}
-
-async function sendResetOTP() {
-  const email = document.getElementById('fp-email').value.trim();
-  const errEl = document.getElementById('fp-error1');
-  const btn   = document.getElementById('fp-send-btn');
-  errEl.style.display = 'none';
-
-  if (!email) { errEl.textContent='Please enter your email.'; errEl.style.display='block'; return; }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent='Please enter a valid email.'; errEl.style.display='block'; return; }
-
-  btn.innerHTML = '<span class="spinner"></span> Sending...';
-
-  await new Promise(r => setTimeout(r, 900));
-
-  if (fpMethod === 'email') {
-    // Supabase password reset email
-    if (SB_URL) {
-      try {
-        await fetch(`${SB_URL}/auth/v1/recover`, {
-          method: 'POST',
-          headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        });
-      } catch {}
-    }
-    btn.textContent = 'Send Reset Link →';
-    // Show "email sent" UI — go straight to step 3 for demo, or show a confirmation
-    document.getElementById('fp-step1').style.display = 'none';
-    document.getElementById('forgot-modal').querySelector('div').innerHTML = `
-      <div style="text-align:center;padding:20px 0">
-        <div style="width:64px;height:64px;background:linear-gradient(135deg,#F59E0B,#EF4444);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 18px">📧</div>
-        <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:10px">Check Your Inbox!</h2>
-        <p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:8px">A password reset link was sent to</p>
-        <p style="font-weight:700;font-size:15px;margin-bottom:24px;color:var(--accent)">${email}</p>
-        <p style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:24px">Click the link in the email to set your new password. Check your spam folder if you don't see it.</p>
-        <button onclick="closeForgotPassword()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer">Back to Login</button>
-        <p style="font-size:12px;color:var(--muted);margin-top:14px">Didn't receive it? <span onclick="openForgotPassword()" style="color:var(--accent);cursor:pointer;font-weight:700;text-decoration:underline">Try again</span></p>
-      </div>`;
-    return;
-  }
-
-  // OTP flow
-  generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-  console.log(`%c[DEV] OTP for ${email}: ${generatedOTP}`, 'background:#818CF8;color:#fff;padding:4px 10px;border-radius:6px;font-weight:bold');
-
-  // If Supabase connected, you'd call your edge function here to send real email
-  // For demo: OTP is shown in browser console
-
-  document.getElementById('fp-sent-to').textContent = email;
-  // Clear OTP boxes
-  document.querySelectorAll('.otp-box').forEach(b => { b.value=''; b.style.borderColor='var(--border)'; b.style.background='var(--surface2)'; });
-  fpGoToStep(2);
-  startOTPTimer(300); // 5 minutes
-  setTimeout(() => document.querySelectorAll('.otp-box')[0].focus(), 100);
-
-  btn.textContent = 'Send OTP Code →';
-  toast('📨 OTP sent! Check browser console for demo code.', 'success');
-}
-
-// ── OTP boxes navigation ──
-function otpInput(el, idx) {
-  el.value = el.value.replace(/[^0-9]/g,'');
-  if (el.value && idx < 5) {
-    document.querySelectorAll('.otp-box')[idx+1].focus();
-  }
-  // Auto-verify when all filled
-  const vals = [...document.querySelectorAll('.otp-box')].map(b=>b.value);
-  if (vals.every(v=>v)) verifyOTP();
-}
-
-function otpKey(e, idx) {
-  if (e.key==='Backspace' && !e.target.value && idx > 0) {
-    document.querySelectorAll('.otp-box')[idx-1].focus();
-  }
-  if (e.key==='ArrowLeft'  && idx > 0) document.querySelectorAll('.otp-box')[idx-1].focus();
-  if (e.key==='ArrowRight' && idx < 5) document.querySelectorAll('.otp-box')[idx+1].focus();
-}
-
-async function verifyOTP() {
-  const entered = [...document.querySelectorAll('.otp-box')].map(b=>b.value).join('');
-  const errEl   = document.getElementById('fp-error2');
-  const btn     = document.getElementById('fp-verify-btn');
-  errEl.style.display = 'none';
-
-  if (entered.length < 6) { errEl.textContent='Please enter all 6 digits.'; errEl.style.display='block'; return; }
-
-  btn.innerHTML = '<span class="spinner"></span> Verifying...';
-  await new Promise(r => setTimeout(r, 700));
-
-  if (entered === generatedOTP) {
-    clearInterval(otpTimerHandle);
-    // Highlight all green
-    document.querySelectorAll('.otp-box').forEach(b => { b.style.borderColor='var(--green)'; b.style.background='rgba(5,150,105,.06)'; });
-    setTimeout(() => fpGoToStep(3), 400);
-  } else {
-    document.querySelectorAll('.otp-box').forEach(b => { b.style.borderColor='var(--red)'; b.style.background='rgba(239,68,68,.05)'; });
-    errEl.textContent='❌ Wrong OTP. Please try again.';
-    errEl.style.display='block';
-    document.querySelectorAll('.otp-box').forEach(b => b.value='');
-    document.querySelectorAll('.otp-box')[0].focus();
-  }
-  btn.textContent = 'Verify OTP →';
-}
-
-function resendOTP() {
-  generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-  console.log(`%c[DEV] New OTP: ${generatedOTP}`, 'background:#818CF8;color:#fff;padding:4px 10px;border-radius:6px;font-weight:bold');
-  document.querySelectorAll('.otp-box').forEach(b => { b.value=''; b.style.borderColor='var(--border)'; b.style.background='var(--surface2)'; });
-  startOTPTimer(300);
-  toast('📨 New OTP sent! Check console.','success');
-}
-
-function startOTPTimer(seconds) {
-  clearInterval(otpTimerHandle);
-  let s = seconds;
-  const el = document.getElementById('otp-timer');
-  otpTimerHandle = setInterval(() => {
-    s--;
-    const m = Math.floor(s/60), sec = s%60;
-    el.textContent = `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-    el.style.color = s < 60 ? 'var(--red)' : 'var(--accent)';
-    if (s <= 0) {
-      clearInterval(otpTimerHandle);
-      el.textContent = 'Expired';
-      el.style.color = 'var(--red)';
-      document.getElementById('fp-error2').textContent = '⏰ OTP expired. Please request a new one.';
-      document.getElementById('fp-error2').style.display = 'block';
-    }
-  }, 1000);
-}
-
-// ── Password strength ──
-function checkPasswordStrength(val) {
-  const reqs = {
-    length:  val.length >= 8,
-    upper:   /[A-Z]/.test(val),
-    number:  /[0-9]/.test(val),
-    special: /[!@#$%^&*(),.?":{}|<>]/.test(val),
-  };
-  const score = Object.values(reqs).filter(Boolean).length;
-  const bar   = document.getElementById('strength-bar');
-  const label = document.getElementById('strength-label');
-  const colors  = ['','#EF4444','#F59E0B','#3B82F6','var(--green)'];
-  const labels  = ['','Weak','Fair','Good','Strong 💪'];
-  bar.style.width   = score * 25 + '%';
-  bar.style.background = colors[score] || 'var(--border)';
-  label.textContent = val ? labels[score] : '';
-  label.style.color = colors[score];
-
-  const setReq = (id, ok) => {
-    const el = document.getElementById(id);
-    el.textContent = (ok ? '✅' : '⬜') + el.textContent.slice(2);
-    el.className   = 'req-item' + (ok?' req-ok':'');
-  };
-  setReq('req-length',  reqs.length);
-  setReq('req-upper',   reqs.upper);
-  setReq('req-number',  reqs.number);
-  setReq('req-special', reqs.special);
-}
-
-async function saveNewPassword() {
-  const np   = document.getElementById('fp-new-pass').value;
-  const cp   = document.getElementById('fp-confirm-pass').value;
-  const errEl = document.getElementById('fp-error3');
-  const btn  = document.getElementById('fp-save-btn');
-  errEl.style.display = 'none';
-
-  if (np.length < 8)  { errEl.textContent='Password must be at least 8 characters.'; errEl.style.display='block'; return; }
-  if (!/[A-Z]/.test(np)) { errEl.textContent='Add at least one uppercase letter.'; errEl.style.display='block'; return; }
-  if (!/[0-9]/.test(np)) { errEl.textContent='Add at least one number.'; errEl.style.display='block'; return; }
-  if (np !== cp)      { errEl.textContent='Passwords do not match.'; errEl.style.display='block'; return; }
-
-  btn.innerHTML = '<span class="spinner"></span> Saving...';
-  await new Promise(r => setTimeout(r, 800));
-
-  // In real app with Supabase: use the token from the reset email link
-  // supabase.auth.updateUser({ password: np })
-  // For demo: update the in-memory constant
-  newAdminPassword = np;
-  // Patch the constant (demo only — in prod this updates Supabase)
-  window.__adminPwdOverride = np;
-
-  fpGoToStep(4);
-  btn.textContent = 'Save New Password →';
-}
-
-function fpGoToLogin() {
-  document.getElementById('forgot-modal').classList.add('hidden');
-  document.getElementById('forgot-modal').style.display = 'none';
-  clearInterval(otpTimerHandle);
-  openAdminLogin();
-  toast('Password updated! Please sign in.','success');
-}
-
-// ═══════════════════════════════════════════════
-//  ADMIN AUTH
-// ═══════════════════════════════════════════════
-// ⚠️ Change these to your real admin credentials
-const ADMIN_EMAIL    = 'admin@skillaunch.com';
-const ADMIN_PASSWORD = 'admin123';
-
-let isAdminLoggedIn = false;
-
-function handleAdminClick(btn) {
-  if (isAdminLoggedIn) {
-    showPage('admin', btn);
-    renderAdminTable();
-  } else {
-    openAdminLogin();
-  }
-}
-
-function openAdminLogin() {
-  document.getElementById('admin-login-modal').classList.remove('hidden');
-  document.getElementById('admin-login-modal').style.display = 'flex';
-  setTimeout(() => document.getElementById('admin-email').focus(), 100);
-}
-
-function closeAdminLogin() {
-  document.getElementById('admin-login-modal').classList.add('hidden');
-  document.getElementById('admin-login-modal').style.display = 'none';
-  document.getElementById('admin-email').value = '';
-  document.getElementById('admin-password').value = '';
-  document.getElementById('admin-login-error').style.display = 'none';
-}
-
-async function doAdminLogin() {
-  const email = document.getElementById('admin-email').value.trim();
-  const pass  = document.getElementById('admin-password').value;
-  const errEl = document.getElementById('admin-login-error');
-  const btn   = document.getElementById('admin-login-btn-text');
-  errEl.style.display = 'none';
-
-  if (!email || !pass) {
-    errEl.textContent = 'Please enter email and password.';
-    errEl.style.display = 'block'; return;
-  }
-
-  btn.innerHTML = '<span class="spinner"></span> Verifying...';
-
-  await new Promise(r => setTimeout(r, 600)); // small UX delay
-
-  // If Supabase is connected — use Supabase Auth + admin role check
-  if (SB_URL) {
-    try {
-      const data = await sbAuth('login', email, pass);
-      // Check if user has admin role in your DB (optional: add is_admin column to profiles)
-      const profile = await sbFetch(`profiles?user_id=eq.${data.user.id}&select=is_admin`).catch(()=>null);
-      const isAdmin = profile?.[0]?.is_admin === true || email === ADMIN_EMAIL;
-      if (!isAdmin) throw new Error('You do not have admin access.');
-      localStorage.setItem('admin_token', data.access_token);
-      grantAdminAccess(email);
-    } catch(e) {
-      errEl.textContent = e.message || 'Invalid credentials.';
-      errEl.style.display = 'block';
-    }
-  } else {
-    // Demo mode — hardcoded credentials
-    if (email === ADMIN_EMAIL && (pass === ADMIN_PASSWORD || pass === window.__adminPwdOverride)) {
-      grantAdminAccess(email);
-    } else {
-      errEl.textContent = '❌ Wrong email or password. Try demo credentials below.';
-      errEl.style.display = 'block';
-    }
-  }
-  btn.textContent = 'Unlock Admin Panel →';
-}
-
-function grantAdminAccess(email) {
-  isAdminLoggedIn = true;
-  sessionStorage.setItem('admin_session', '1');
-  closeAdminLogin();
-  // Show admin tab + navigate
-  const adminBtn = document.getElementById('admin-tab-btn');
-  adminBtn.style.display = 'block';
-  showPage('admin', adminBtn);
-  renderAdminTable();
-  toast('🔐 Admin access granted!', 'success');
-  // Show logout option in admin tab
-  adminBtn.textContent = '⚙️ Admin ●';
-}
-
-function logoutAdmin() {
-  isAdminLoggedIn = false;
-  sessionStorage.removeItem('admin_session');
-  localStorage.removeItem('admin_token');
-  document.getElementById('admin-tab-btn').style.display = 'none';
-  showPage('home', document.querySelectorAll('.tab-btn')[0]);
-  toast('Admin session ended', '');
-}
-
-function togglePwd(inputId, btn) {
-  const inp = document.getElementById(inputId);
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
-}
-
-// ═══════════════════════════════════════════════
-//  ADMIN PANEL
-// ═══════════════════════════════════════════════
-let adminTab = 'courses';
-
-function switchAdminTab(tab, btn) {
-  adminTab = tab;
-  document.querySelectorAll('#page-admin .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderAdminTable();
-}
-
-function renderAdminTable() {
-  const tbl = document.getElementById('admin-table');
-  if (adminTab === 'courses') {
-    document.getElementById('admin-count').textContent = `Showing ${allCourses.length} courses`;
-    tbl.innerHTML = `
-      <table style="width:100%;border-collapse:collapse">
-        <thead>
-          <tr style="background:var(--surface2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)">
-            <th style="padding:14px 20px;text-align:left">Thumbnail</th>
-            <th style="padding:14px 20px;text-align:left">Title</th>
-            <th style="padding:14px 20px;text-align:left">Category</th>
-            <th style="padding:14px 20px;text-align:left">Price</th>
-            <th style="padding:14px 20px;text-align:left">Students</th>
-            <th style="padding:14px 20px;text-align:left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${allCourses.map(c => `
-            <tr style="border-top:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='rgba(91,94,244,.03)'" onmouseout="this.style.background=''">
-              <td style="padding:14px 20px;font-size:22px">${c.thumbnail||'📚'}</td>
-              <td style="padding:14px 20px">
-                <div style="font-size:14px;font-weight:600;max-width:280px;line-height:1.4">${c.title}</div>
-                <div style="font-size:12px;color:var(--muted);margin-top:2px">${(c.description||'').slice(0,60)}...</div>
-              </td>
-              <td style="padding:14px 20px"><span style="background:rgba(91,94,244,.1);color:var(--accent);font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px">${c.category}</span></td>
-              <td style="padding:14px 20px;font-weight:700;font-size:14px">${c.price===0?'<span style="color:var(--green)">FREE</span>':'₹'+c.price?.toLocaleString()}</td>
-              <td style="padding:14px 20px;font-size:13px;color:var(--muted)">${(c.students||0).toLocaleString()}</td>
-              <td style="padding:14px 20px">
-                <div style="display:flex;gap:8px">
-                  <button onclick="openEditModal('course',${c.id})" style="padding:6px 14px;background:rgba(91,94,244,.1);color:var(--accent);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">✏️ Edit</button>
-                  <button onclick="deleteItem('course',${c.id})" style="padding:6px 14px;background:rgba(239,68,68,.08);color:var(--red);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">🗑️</button>
-                </div>
-              </td>
-            </tr>`).join('')}
-        </tbody>
-      </table>`;
-  } else {
-    document.getElementById('admin-count').textContent = `Showing ${allJobs.length} jobs`;
-    tbl.innerHTML = `
-      <table style="width:100%;border-collapse:collapse">
-        <thead>
-          <tr style="background:var(--surface2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)">
-            <th style="padding:14px 20px;text-align:left">Company</th>
-            <th style="padding:14px 20px;text-align:left">Job Title</th>
-            <th style="padding:14px 20px;text-align:left">Location</th>
-            <th style="padding:14px 20px;text-align:left">Salary</th>
-            <th style="padding:14px 20px;text-align:left">Match %</th>
-            <th style="padding:14px 20px;text-align:left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${allJobs.map(j => `
-            <tr style="border-top:1px solid var(--border);transition:background .15s" onmouseover="this.style.background='rgba(91,94,244,.03)'" onmouseout="this.style.background=''">
-              <td style="padding:14px 20px">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div style="width:36px;height:36px;border-radius:8px;background:${j.logo_bg||'rgba(91,94,244,.15)'};color:${j.logo_color||'#818CF8'};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px">${j.logo_letter||'?'}</div>
-                  <span style="font-weight:600;font-size:13px">${j.company}</span>
-                </div>
-              </td>
-              <td style="padding:14px 20px;font-size:14px;font-weight:600">${j.title}</td>
-              <td style="padding:14px 20px;font-size:13px;color:var(--muted)">${j.location}</td>
-              <td style="padding:14px 20px;font-size:13px;font-weight:600">${j.salary}</td>
-              <td style="padding:14px 20px"><span style="background:rgba(5,150,105,.1);color:var(--green);font-size:12px;font-weight:700;padding:3px 10px;border-radius:100px">${j.match}%</span></td>
-              <td style="padding:14px 20px">
-                <div style="display:flex;gap:8px">
-                  <button onclick="openEditModal('job',${j.id})" style="padding:6px 14px;background:rgba(91,94,244,.1);color:var(--accent);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">✏️ Edit</button>
-                  <button onclick="deleteItem('job',${j.id})" style="padding:6px 14px;background:rgba(239,68,68,.08);color:var(--red);border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">🗑️</button>
-                </div>
-              </td>
-            </tr>`).join('')}
-        </tbody>
-      </table>`;
-  }
-}
-
-// ── EDIT MODAL ──
-function openEditModal(type, id) {
-  const item = type==='course' ? allCourses.find(c=>c.id===id) : allJobs.find(j=>j.id===id);
-  if (!item) return;
-  document.getElementById('edit-id').value = id;
-  document.getElementById('edit-type').value = type;
-  document.getElementById('edit-modal-title').textContent = type==='course' ? '✏️ Edit Course' : '✏️ Edit Job';
-  const fields = type==='course'
-    ? [
-        {key:'title',label:'Course Title',val:item.title,type:'text'},
-        {key:'description',label:'Description',val:item.description,type:'textarea'},
-        {key:'category',label:'Category',val:item.category,type:'select',opts:['AI & ChatGPT','Automation','Data Science','No-Code','Marketing']},
-        {key:'price',label:'Price (₹) — enter 0 for Free',val:item.price,type:'number'},
-        {key:'original_price',label:'Original Price (₹)',val:item.original_price,type:'number'},
-        {key:'thumbnail',label:'Thumbnail Emoji',val:item.thumbnail,type:'text'},
-        {key:'duration',label:'Duration (e.g. 8h)',val:item.duration,type:'text'},
-      ]
-    : [
-        {key:'title',label:'Job Title',val:item.title,type:'text'},
-        {key:'company',label:'Company Name',val:item.company,type:'text'},
-        {key:'location',label:'Location',val:item.location,type:'text'},
-        {key:'salary',label:'Salary Range',val:item.salary,type:'text'},
-        {key:'match',label:'Match % (0–100)',val:item.match,type:'number'},
-        {key:'logo_letter',label:'Company Logo Letter',val:item.logo_letter,type:'text'},
-      ];
-
-  document.getElementById('edit-fields').innerHTML = fields.map(f => `
-    <div class="input-group" style="margin-bottom:14px">
-      <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">${f.label}</label>
-      ${f.type==='textarea'
-        ? `<textarea id="ef-${f.key}" rows="2" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--surface2);outline:none;resize:vertical">${f.val||''}</textarea>`
-        : f.type==='select'
-        ? `<select id="ef-${f.key}" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--surface2);outline:none">${f.opts.map(o=>`<option${o===f.val?' selected':''}>${o}</option>`).join('')}</select>`
-        : `<input id="ef-${f.key}" type="${f.type}" value="${f.val||''}" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:inherit;font-size:13.5px;color:var(--text);background:var(--surface2);outline:none">`
-      }
-    </div>`).join('');
-
-  document.getElementById('edit-modal').classList.remove('hidden');
-  document.getElementById('edit-modal').style.display = 'flex';
-}
-
-function closeEditModal() {
-  document.getElementById('edit-modal').classList.add('hidden');
-  document.getElementById('edit-modal').style.display = 'none';
-}
-
-async function saveEdit() {
-  const id = parseInt(document.getElementById('edit-id').value);
-  const type = document.getElementById('edit-type').value;
-  const btn = document.getElementById('save-btn-text');
-  btn.innerHTML = '<span class="spinner"></span> Saving...';
-
-  const fields = type==='course'
-    ? ['title','description','category','price','original_price','thumbnail','duration']
-    : ['title','company','location','salary','match','logo_letter'];
-
-  const updates = {};
-  fields.forEach(k => {
-    const el = document.getElementById('ef-'+k);
-    if (el) updates[k] = el.tagName==='INPUT'&&el.type==='number' ? Number(el.value) : el.value;
-  });
-
-  try {
-    if (SB_URL) {
-      const table = type==='course' ? 'courses' : 'jobs';
-      await sbFetch(`${table}?id=eq.${id}`, {method:'PATCH', prefer:'return=minimal', body:updates});
-    }
-    // Update local state
-    if (type==='course') {
-      const idx = allCourses.findIndex(c=>c.id===id);
-      if (idx>=0) allCourses[idx] = {...allCourses[idx],...updates};
-      renderCourses(allCourses);
-    } else {
-      const idx = allJobs.findIndex(j=>j.id===id);
-      if (idx>=0) allJobs[idx] = {...allJobs[idx],...updates};
-      renderJobs(allJobs);
-    }
-    renderAdminTable();
-    closeEditModal();
-    toast('✅ Changes saved!','success');
-    showSQL(`UPDATE ${type==='course'?'courses':'jobs'}\nSET title='${updates.title}'\nWHERE id=${id};`);
-  } catch(e) { toast('Error: '+e.message,'error'); }
-  btn.textContent = '💾 Save Changes';
-}
-
-function openAddModal() {
-  const type = adminTab==='courses' ? 'course' : 'job';
-  const newId = Date.now();
-  if (type==='course') {
-    allCourses.push({id:newId,title:'New Course',description:'Course description',category:'AI & ChatGPT',price:999,original_price:1999,thumbnail:'📚',bg:'linear-gradient(135deg,#EEF2FF,#E0E7FF)',rating:4.5,students:0,duration:'4h'});
-    renderCourses(allCourses);
-  } else {
-    allJobs.push({id:newId,title:'New Job',company:'Company',location:'Remote',salary:'₹10L–₹15L',match:80,featured:false,skills:[],logo_bg:'rgba(91,94,244,.15)',logo_color:'#818CF8',logo_letter:'C',posted:'just now'});
-    renderJobs(allJobs);
-  }
-  renderAdminTable();
-  openEditModal(type, newId);
-}
-
-async function deleteItem(type, id) {
-  if (!confirm(`Delete this ${type}? This cannot be undone.`)) return;
-  try {
-    if (SB_URL) {
-      const table = type==='course' ? 'courses' : 'jobs';
-      await sbFetch(`${table}?id=eq.${id}`, {method:'DELETE', prefer:'return=minimal'});
-    }
-    if (type==='course') { allCourses = allCourses.filter(c=>c.id!==id); renderCourses(allCourses); }
-    else { allJobs = allJobs.filter(j=>j.id!==id); renderJobs(allJobs); }
-    renderAdminTable();
-    toast('🗑️ Deleted','');
-  } catch(e) { toast('Error: '+e.message,'error'); }
-}
-
-// ═══════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════
-// Secret shortcut: Ctrl + Shift + A
-document.addEventListener('keydown', e => {
-  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+// ══ KEYBOARD SHORTCUT ══
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey&&e.shiftKey&&e.key==='A'){
     e.preventDefault();
-    if (isAdminLoggedIn) {
-      showPage('admin', document.getElementById('admin-tab-btn'));
-      renderAdminTable();
-    } else {
-      openAdminLogin();
-    }
+    isAdminLoggedIn?showPage('admin',document.getElementById('admin-tab-btn')):openAdminLogin();
   }
 });
 
-window.addEventListener('load', () => {
-  if (SB_URL && SB_KEY) {
-    document.getElementById('config-banner').classList.add('hidden');
-    document.getElementById('main-nav').classList.remove('with-banner');
-    document.getElementById('setup-modal').classList.add('hidden');
-  }
+// ══ INIT — nothing opens on load ══
+window.addEventListener('load',()=>{
   loadAllData();
-  // Check existing session
-  const token = localStorage.getItem('sb_token');
-  if (token && SB_URL) {
-    fetch(`${SB_URL}/auth/v1/user`, {
-      headers:{'apikey':SB_KEY,'Authorization':`Bearer ${token}`}
-    }).then(r=>r.json()).then(u=>{ if(u.id){ currentUser=u; onLoggedIn(); }}).catch(()=>{});
+  if(sessionStorage.getItem('admin_session')){
+    isAdminLoggedIn=true;
+    const btn=document.getElementById('admin-tab-btn');
+    btn.style.display='block';btn.textContent='⚙️ Admin ●';
+  }
+  const token=localStorage.getItem('sb_token');
+  if(token&&SB_URL){
+    fetch(`${SB_URL}/auth/v1/user`,{headers:{'apikey':SB_KEY,'Authorization':`Bearer ${token}`}})
+      .then(r=>r.json()).then(u=>{if(u.id){currentUser=u;onLoggedIn();}}).catch(()=>{});
   }
 });
 </script>
